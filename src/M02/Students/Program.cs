@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Students
 {
@@ -9,8 +10,8 @@ namespace Students
         {
             string[] subjects = { "Maths", "PE", "Physics", "English", "Programming", "History" };
             var student1c1 = new Student("vasya.pupkin@epam.com");
-            var student2c1 = new Student("shrek.swampov@epam.com");
-            var student3c1 = new Student("anton.vaskin@epam.com");
+            var student2c1 = new Student("sHREk.swampov@epam.com");
+            var student3c1 = new Student("anton.VASkin@epam.com");
             var student1c2 = new Student("Vasya", "Pupkin");
             var student2c2 = new Student("Shrek", "Swampov");
             var student3c2 = new Student("Anton", "Vaskin");
@@ -20,16 +21,19 @@ namespace Students
             int nextRandom; // To store random value for checks
             foreach (Student st in students)
             {
+                List<int> possible = Enumerable.Range(0, 6).ToList(); // Possible values for randomizer
                 studentSubjectDict[st] = new HashSet<string>();
                 while (studentSubjectDict[st].Count < 3)
                 {
-                    nextRandom = rnd.Next(0, subjects.Length - 1);
-                    if (!studentSubjectDict[st].Contains(subjects[nextRandom])) studentSubjectDict[st].Add(subjects[nextRandom]);
+                    nextRandom = rnd.Next(0, possible.Count);
+                    studentSubjectDict[st].Add(subjects[possible[nextRandom]]);
+                    possible.RemoveAt(nextRandom);
                 }
             }
             foreach (var item in studentSubjectDict)
             {
                 Console.WriteLine(item.Key.FullName); // return 3 out of 6
+                Console.WriteLine(item.Key.Email);
             }
         }
     }

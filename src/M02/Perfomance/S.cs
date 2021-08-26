@@ -1,21 +1,16 @@
 ﻿using System;
 namespace Perfomance
 {
-    struct S : IComparable
+    struct S : IComparable<S>
     {
         public int i { get; }
         public S(int num)
         {
             i = num;
         }
-
-        public int CompareTo(object obj)
+        public int CompareTo(S other)
         {
-            if (obj == null) return 1;
-            if (obj is not S) throw new ArgumentException("Object is not S");
-            S structVariable = (S)obj;
-            return this.i.CompareTo(structVariable.i);
-
+            return this.i.CompareTo(other.i);
         }
     }
 }

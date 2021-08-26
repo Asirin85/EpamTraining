@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Perfomance
 {
-    public class C : IComparable
+    public class C : IComparable<C>
     {
         private int _i;
         public C(int num)
@@ -9,12 +9,11 @@ namespace Perfomance
             _i = num;
         }
 
-        public int CompareTo(object obj)
+        public int CompareTo(C other)
         {
-            if (obj == null) return 1;
-            C classVariable = obj as C;
-            if (classVariable != null)
-                return this._i.CompareTo(classVariable._i);
+            if (other == null) return 1;
+            if(other is C)
+                return this._i.CompareTo(other._i);
             else throw new ArgumentException("Object is not C");
         }
     }

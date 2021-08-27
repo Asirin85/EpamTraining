@@ -11,10 +11,8 @@ namespace Perfomance
 
         public int CompareTo(C other)
         {
-            if (other == null) return 1;
-            if(other is C)
-                return this._i.CompareTo(other._i);
-            else throw new ArgumentException("Object is not C");
+            if (other == null) throw new ArgumentException("Object is null");
+            return this._i.CompareTo(other._i);
         }
     }
 }

@@ -10,20 +10,24 @@ namespace Application
     {
         public static string DoubleLetters(string input, string charToDouble)
         {
-            string newString = input;
-            List<char> list = new List<char>();
-            for (int i = 0; i < charToDouble.Length; i++)
+            if (input is { Length: > 0 } && charToDouble is { Length: > 0 })
             {
-                if (!list.Contains(charToDouble[i]))
+                HashSet<char> charSet = new HashSet<char>();
+                for (int i = 0; i < charToDouble.Length; i++)
                 {
-                    list.Add(charToDouble[i]);
+                    if (!charSet.Contains(charToDouble[i]))
+                    {
+                        charSet.Add(charToDouble[i]);
+                    }
                 }
+                StringBuilder sb = new StringBuilder(input);
+                foreach (char c in charSet)
+                {
+                    sb.Replace($"{c}", $"{c}{c}");
+                }
+                return sb.ToString();
             }
-            foreach (char c in list)
-            {
-                newString = newString.Replace(c.ToString(), $"{c}{c}");
-            }
-            return newString;
+            else throw new ArgumentException("Wrong input data, either null or empty");
         }
     }
 }

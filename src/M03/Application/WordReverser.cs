@@ -10,7 +10,7 @@ namespace Application
     {
         public static string Reverse(string input)
         {
-            if (input != null && input.Length>0)
+            if (input is { Length: > 0 })
             {
                 string[] array = input.Split(' ');
                 StringBuilder sb = new StringBuilder(input.Length);

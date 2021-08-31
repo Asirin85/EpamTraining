@@ -9,7 +9,7 @@ namespace Application
         static void Main(string[] args)
         {
             string testString = "  ,.affd,affd,afsd.....dffsa    .dsffa,, dffsd";
-            Console.WriteLine($"Average length of word in string [{testString}] is {WordCounter.AvgWordLength(testString)} {Environment.NewLine}"); // First task
+            Console.WriteLine($"Average length of word in string [{testString}] is {WordCounter.AvgWordLength(testString)}{Environment.NewLine}"); // First task
 
             string s = "shrek one love";
             string s2 = "sorry";

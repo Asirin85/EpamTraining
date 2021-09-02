@@ -39,7 +39,7 @@ namespace Game
                     case DirectionEnum.Right when CanMoveTo(gameField, Coordinates.X + 1, Coordinates.Y):
                         moved = TryMove(gameField, Coordinates.X + 1, Coordinates.Y);
                         break;
-                    case DirectionEnum.Up or DirectionEnum.Left or DirectionEnum.Down or DirectionEnum.Right:
+                    default:
                         var wrongRoute = true;
                         _inputOutput.WrongInput(wrongRoute);
                         break;

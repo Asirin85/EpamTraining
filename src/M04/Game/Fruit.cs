@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    class Fruit : Coordinates
+    public class Fruit : GameObject
     {
-        public string Name { get; private set; }
-        public int Score { get; private set; }
-        private CoordinateStructure _position;
+        public string Name { get; }
+        public int Score { get; }
+        private readonly CoordinateStructure _position;
         public Fruit(string name, int score, CoordinateStructure position)
         {
             if (name is { Length: > 0 })

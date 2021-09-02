@@ -6,97 +6,46 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    class Player : Character
+    public class Player : GameObject, IMovable
     {
-        private CoordinateStructure _currentPosition;
         public int Score { get; private set; } = 0;
         public bool PlayerIsAlive { get; set; }
-        public Player(CoordinateStructure startPosition)
+        private IInputOutputHandler _inputOutput;
+        public Player(CoordinateStructure startPosition, IInputOutputHandler inputOutput)
         {
+            _inputOutput = inputOutput;
             PlayerIsAlive = true;
-            _currentPosition = startPosition;
-        }
-        public override CoordinateStructure GetCoordinates()
-        {
-            return _currentPosition;
+            Coordinates = startPosition;
         }
 
-        public override bool Move(object[,] gameField)
+        public bool Move(GameObject[,] gameField)
         {
-            bool ateFruit = false;
-            bool moved = false;
-            bool wrongKey = false;
+            var ateFruit = false;
+            var moved = false;
             while (!moved)
             {
-                Console.WriteLine("Type w,a,s,d to move");
-                var key = Console.ReadKey().KeyChar;
-                Console.WriteLine();
-                switch (key)
+                var direction = _inputOutput.Input();
+                switch (direction)
                 {
-                    case 'w':
-
-                        if (_currentPosition.Y - 1 >= 0 && gameField[_currentPosition.X, _currentPosition.Y - 1] is not Obstacle)
-                        {
-                            wrongKey = false;
-                            moved = MoveHelper(gameField, _currentPosition.X, _currentPosition.Y - 1);
-                        }
-                        else
-                        {
-                            WrongInput(wrongKey);
-                            wrongKey = true;
-                            Console.WriteLine("You can not go there, try different route");
-                        }
+                    case DirectionEnum.Up when CanMoveTo(gameField, Coordinates.X, Coordinates.Y - 1):
+                        moved = TryMove(gameField, Coordinates.X, Coordinates.Y - 1);
                         break;
-                    case 'a':
-
-                        if (_currentPosition.X - 1 >= 0 && gameField[_currentPosition.X - 1, _currentPosition.Y] is not Obstacle)
-                        {
-                            wrongKey = false;
-                            moved = MoveHelper(gameField, _currentPosition.X - 1, _currentPosition.Y);
-                        }
-                        else
-                        {
-                            WrongInput(wrongKey);
-                            wrongKey = true;
-                            Console.WriteLine("You can not go there, try different route");
-                        }
+                    case DirectionEnum.Left when CanMoveTo(gameField, Coordinates.X - 1, Coordinates.Y):
+                        moved = TryMove(gameField, Coordinates.X - 1, Coordinates.Y);
                         break;
-                    case 's':
-
-                        if (_currentPosition.Y + 1 < gameField.GetLength(1) && gameField[_currentPosition.X, _currentPosition.Y + 1] is not Obstacle)
-                        {
-                            wrongKey = false;
-                            moved = MoveHelper(gameField, _currentPosition.X, _currentPosition.Y + 1);
-                        }
-                        else
-                        {
-                            WrongInput(wrongKey);
-                            wrongKey = true;
-                            Console.WriteLine("You can not go there, try different route");
-                        }
+                    case DirectionEnum.Down when CanMoveTo(gameField, Coordinates.X, Coordinates.Y + 1):
+                        moved = TryMove(gameField, Coordinates.X, Coordinates.Y + 1);
                         break;
-                    case 'd':
-
-                        if (_currentPosition.X + 1 < gameField.GetLength(0) && gameField[_currentPosition.X + 1, _currentPosition.Y] is not Obstacle)
-                        {
-                            wrongKey = false;
-                            moved = MoveHelper(gameField, _currentPosition.X + 1, _currentPosition.Y);
-                        }
-                        else
-                        {
-                            WrongInput(wrongKey);
-                            wrongKey = true;
-                            Console.WriteLine("You can not go there, try different route");
-                        }
+                    case DirectionEnum.Right when CanMoveTo(gameField, Coordinates.X + 1, Coordinates.Y):
+                        moved = TryMove(gameField, Coordinates.X + 1, Coordinates.Y);
                         break;
-                    default:
-                        WrongInput(wrongKey);
-                        wrongKey = true;
-                        Console.WriteLine("Wrong key, try again");
+                    case DirectionEnum.Up or DirectionEnum.Left or DirectionEnum.Down or DirectionEnum.Right:
+                        var wrongRoute = true;
+                        _inputOutput.WrongInput(wrongRoute);
                         break;
                 }
             }
-            switch (gameField[_currentPosition.X, _currentPosition.Y])
+            switch (gameField[Coordinates.X, Coordinates.Y])
             {
                 case Enemy:
                     PlayerIsAlive = false;
@@ -106,29 +55,20 @@ namespace Game
                     ateFruit = true;
                     break;
             }
-            gameField[_currentPosition.X, _currentPosition.Y] = this;
-            return ateFruit;
+            gameField[Coordinates.X, Coordinates.Y] = this;
+            return ateFruit; // Method returns true if a fruit was eaten on the current turn 
         }
-        private bool MoveHelper(object[,] gameField, int X, int Y)
+
+        public bool CanMoveTo(GameObject[,] gameField, int X, int Y)
         {
-            gameField[_currentPosition.X, _currentPosition.Y] = null;
-            _currentPosition.X = X;
-            _currentPosition.Y = Y;
+            return X < gameField.GetLength(0) && X >= 0 && Y < gameField.GetLength(1) && Y >= 0 && gameField[X, Y] is not Obstacle; // Check if you can step in the X,Y point in a field
+        }
+
+        private bool TryMove(GameObject[,] gameField, int X, int Y)
+        {
+            gameField[Coordinates.X, Coordinates.Y] = null;
+            Coordinates = new CoordinateStructure(X, Y);
             return true;
-        }
-        private void WrongInput(bool secondMistake)
-        {
-            int counter = 2;
-            if (secondMistake) counter = 3;
-            while (counter > 0)// amount of lines
-            {
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
-                int currentLineCursor = Console.CursorTop;
-                Console.SetCursorPosition(0, Console.CursorTop);
-                Console.Write(new string(' ', Console.WindowWidth));
-                Console.SetCursorPosition(0, currentLineCursor);
-                counter--;
-            }
         }
     }
 }

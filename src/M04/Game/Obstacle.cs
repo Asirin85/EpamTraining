@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    class Obstacle : Coordinates
+    public class Obstacle : GameObject
     {
-        public string Name { get; private set; }
-        private CoordinateStructure _position;
+        public string Name { get; }
+        private readonly CoordinateStructure _position;
         public Obstacle(string name, CoordinateStructure position)
         {
             if (name is { Length: > 0 })

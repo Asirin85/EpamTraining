@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    abstract class Coordinates
+    interface IMovable
     {
-        abstract public CoordinateStructure GetCoordinates();
+        bool Move(GameObject[,] gameField);
+        bool CanMoveTo(GameObject[,] gameField, int X, int Y);
     }
 }

@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    abstract class Character : Coordinates
+    public enum DirectionEnum
     {
-        abstract public bool Move(object[,] gameField);
+        Up,
+        Down,
+        Left,
+        Right
     }
 }

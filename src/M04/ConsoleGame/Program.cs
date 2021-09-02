@@ -1,12 +1,14 @@
 ﻿using System;
+using Game;
 
-namespace Game
+namespace ConsoleGame
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Field gamePlan = new Field(10, 10);
+            IInputOutputHandler inputOutput = new ConsoleInputOutput();
+            Field gamePlan = new Field(10, 10, inputOutput);
             Console.WriteLine($"Your end score is {gamePlan.StartGame()}");
         }
     }

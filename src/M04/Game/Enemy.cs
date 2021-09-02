@@ -6,70 +6,69 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    class Enemy : Character
+    public class Enemy : GameObject, IMovable
     {
-        public string Name { get; set; }
+        public string Name { get; }
         private Player _player;
-        private CoordinateStructure _currentMonsterPosition;
         public Enemy(Player player, CoordinateStructure monsterPosition, string name)
         {
             _player = player;
-            _currentMonsterPosition = monsterPosition;
+            Coordinates = monsterPosition;
             Name = name;
         }
-        public override CoordinateStructure GetCoordinates()
-        {
-            return _currentMonsterPosition;
-        }
 
-        public override bool Move(object[,] gameField)
+        public bool Move(GameObject[,] gameField)
         {
-            if (_player.GetCoordinates().X < _currentMonsterPosition.X)
+            if (_player.GetCoordinates().X < Coordinates.X)
             {
-                if (gameField[_currentMonsterPosition.X - 1, _currentMonsterPosition.Y] is null or Player)
+                if (CanMoveTo(gameField, Coordinates.X - 1, Coordinates.Y))
                 {
-                    ChangePos(gameField, _currentMonsterPosition.X - 1, _currentMonsterPosition.Y);
+                    ChangePos(gameField, Coordinates.X - 1, Coordinates.Y);
                 }
                 else MoveByY(gameField);
             }
-            else if (_player.GetCoordinates().X > _currentMonsterPosition.X)
+            else if (_player.GetCoordinates().X > Coordinates.X)
             {
-                if (gameField[_currentMonsterPosition.X + 1, _currentMonsterPosition.Y] is null or Player)
+                if (CanMoveTo(gameField, Coordinates.X + 1, Coordinates.Y))
                 {
-                    ChangePos(gameField, _currentMonsterPosition.X + 1, _currentMonsterPosition.Y);
+                    ChangePos(gameField, Coordinates.X + 1, Coordinates.Y);
                 }
                 else MoveByY(gameField);
             }
             else MoveByY(gameField);
             return !_player.PlayerIsAlive; // did player die?
         }
-        private void ChangePos(object[,] gameField, int X, int Y)
+        private void ChangePos(GameObject[,] gameField, int X, int Y)
         {
-            gameField[_currentMonsterPosition.X, _currentMonsterPosition.Y] = null;
-            _currentMonsterPosition.X = X;
-            _currentMonsterPosition.Y = Y;
+            gameField[Coordinates.X, Coordinates.Y] = null;
+            Coordinates = new CoordinateStructure(X, Y);
             if (gameField[X, Y] is Player)
             {
                 _player.PlayerIsAlive = false;
             }
             gameField[X, Y] = this;
         }
-        private void MoveByY(object[,] gameField)
+        private void MoveByY(GameObject[,] gameField)
         {
-            if (_player.GetCoordinates().Y < _currentMonsterPosition.Y)
+            if (_player.GetCoordinates().Y < Coordinates.Y)
             {
-                if (gameField[_currentMonsterPosition.X, _currentMonsterPosition.Y - 1] is null or Player)
+                if (CanMoveTo(gameField, Coordinates.X, Coordinates.Y - 1))
                 {
-                    ChangePos(gameField, _currentMonsterPosition.X, _currentMonsterPosition.Y - 1);
+                    ChangePos(gameField, Coordinates.X, Coordinates.Y - 1);
                 }
             }
-            else if (_player.GetCoordinates().Y > _currentMonsterPosition.Y)
+            else if (_player.GetCoordinates().Y > Coordinates.Y)
             {
-                if (gameField[_currentMonsterPosition.X, _currentMonsterPosition.Y + 1] is null or Player)
+                if (CanMoveTo(gameField, Coordinates.X, Coordinates.Y + 1))
                 {
-                    ChangePos(gameField, _currentMonsterPosition.X, _currentMonsterPosition.Y + 1);
+                    ChangePos(gameField, Coordinates.X, Coordinates.Y + 1);
                 }
             }
+        }
+
+        public bool CanMoveTo(GameObject[,] gameField, int X, int Y)
+        {
+            return gameField[X, Y] is null or Player; // Checks if point is empty or Player is in it
         }
     }
 }

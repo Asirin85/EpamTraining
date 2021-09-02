@@ -6,80 +6,86 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    class Field : Coordinates
+    public class Field : GameObject
     {
-        private object[,] _field;
+        private GameObject[,] _field;
         private Player _player;
         private Enemy[] _enemies;
         private Fruit[] _fruits;
-        private CoordinateStructure _maxFieldSize;
         private Obstacle[] _obstacles;
-        public Field(int maxX, int maxY)
+        private IInputOutputHandler _inputOutput;
+        public Field(int maxX, int maxY, IInputOutputHandler inputOutput)
         {
+            _inputOutput = inputOutput;
             if (maxX >= 5 && maxY >= 5 && maxX <= 15 && maxY <= 15) // creating gaming field
             {
-                _maxFieldSize = new CoordinateStructure(maxX, maxY);
-                _field = new object[_maxFieldSize.X, _maxFieldSize.Y];
+                Coordinates = new CoordinateStructure(maxX, maxY);
+                _field = new GameObject[Coordinates.X, Coordinates.Y];
             }
             else
             {
-                _maxFieldSize = new CoordinateStructure(15, 15);
-                _field = new object[_maxFieldSize.X, _maxFieldSize.Y];
+                Coordinates = new CoordinateStructure(15, 15);
+                _field = new GameObject[Coordinates.X, Coordinates.Y];
             }
-            List<int> possibleCoord = Enumerable.Range(0, _maxFieldSize.X * _maxFieldSize.Y).ToList();
-            Random rnd = new Random();
+            List<int> possibleCoord = Enumerable.Range(0, Coordinates.X * Coordinates.Y).ToList();
+            var rnd = new Random();
 
             CoordinateStructure position = CreatePosition(possibleCoord, rnd);
-            _player = new Player(position);                             // welcome new player
+            _player = new Player(position, _inputOutput);                             // welcome new player
             _field[position.X, position.Y] = _player;
 
-            _fruits = new Fruit[_maxFieldSize.X * _maxFieldSize.Y / 20]; // create fruits
+            _fruits = new Fruit[Coordinates.X * Coordinates.Y / 20]; // create fruits
             for (int i = 0; i < _fruits.Length; i++)
             {
-                position = CreatePosition(possibleCoord, rnd);
-                _fruits[i] = new Fruit("Apple", rnd.Next(0, 11), position);
-                _field[position.X, position.Y] = _fruits[i];
+                CoordinateStructure fruitPosition = CreatePosition(possibleCoord, rnd);
+                _fruits[i] = new Fruit("Apple", rnd.Next(0, 11), fruitPosition);
+                _field[fruitPosition.X, fruitPosition.Y] = _fruits[i];
             }
 
-            _obstacles = new Obstacle[_maxFieldSize.X * _maxFieldSize.Y / 5]; //create obstacles
+            _obstacles = new Obstacle[Coordinates.X * Coordinates.Y / 5]; //create obstacles
             for (int i = 0; i < _obstacles.Length; i++)
             {
-                position = CreatePosition(possibleCoord, rnd);
-                _obstacles[i] = new Obstacle("Tree", position);
-                _field[position.X, position.Y] = _obstacles[i];
+                CoordinateStructure obstaclePosition = CreatePosition(possibleCoord, rnd);
+                _obstacles[i] = new Obstacle("Tree", obstaclePosition);
+                _field[obstaclePosition.X, obstaclePosition.Y] = _obstacles[i];
             }
 
-            if (_maxFieldSize.X * _maxFieldSize.Y / 25 > 5)
+            if (Coordinates.X * Coordinates.Y / 25 > 5)
             {
                 _enemies = new Enemy[5];
             }
-            else _enemies = new Enemy[_maxFieldSize.X * _maxFieldSize.Y / 25]; // create enemies
+            else _enemies = new Enemy[Coordinates.X * Coordinates.Y / 25]; // create enemies
 
             for (int i = 0; i < _enemies.Length; i++)
             {
-                position = CreatePosition(possibleCoord, rnd);
-                _enemies[i] = new Enemy(_player, position, "Wolf");
-                _field[position.X, position.Y] = _enemies[i];
+                CoordinateStructure enemyPosition = CreatePosition(possibleCoord, rnd);
+                _enemies[i] = new Enemy(_player, enemyPosition, "Wolf");
+                _field[enemyPosition.X, enemyPosition.Y] = _enemies[i];
             }
         }
         public int StartGame()
         {
-            int leftToEat = _fruits.Length;
+            var leftToEat = _fruits.Length;
             while (_player.PlayerIsAlive && leftToEat > 0)
             {
-                DrawField();
+                _inputOutput.Output(_field);
                 if (_player.Move(_field))
                 {
                     leftToEat--;
-                    if (leftToEat == 0) break;
+                    if (leftToEat == 0)
+                    {
+                        var gameWon = true;
+                        _inputOutput.GameResults(gameWon);
+                        break;
+                    }
                 }
                 foreach (Enemy enemy in _enemies)
                 {
-                    enemy.Move(_field);
-                    if (!_player.PlayerIsAlive)
+                    if (enemy.Move(_field)) // condition is true if player is dead
                     {
-                        DrawField();
-                        Console.WriteLine("YOU DIED! GAME OVER!");
+                        _inputOutput.Output(_field);
+                        var gameWon = false;
+                        _inputOutput.GameResults(gameWon);
                         break;
                     }
                 }
@@ -87,51 +93,13 @@ namespace Game
             }
             return _player.Score;
         }
-        public override CoordinateStructure GetCoordinates()
-        {
-            return _maxFieldSize;
-        }
         private CoordinateStructure CreatePosition(List<int> possibleCoord, Random rnd)
         {
-            int generatedNumber = rnd.Next(0, possibleCoord.Count());
+            var generatedNumber = rnd.Next(0, possibleCoord.Count());
             CoordinateStructure position = new CoordinateStructure(possibleCoord[generatedNumber] % 10, possibleCoord[generatedNumber] / 10);
             possibleCoord.RemoveAt(generatedNumber);
             return position;
         }
-        private void DrawField() // Draw in console
-        {
-            Console.Clear();
-            for (int i = 0; i < _maxFieldSize.Y; i++)
-            {
-                for (int j = 0; j < _maxFieldSize.X; j++)
-                {
-                    switch (_field[j, i])
-                    {
-                        case Fruit:
-                            Console.Write("[F]", Console.ForegroundColor = ConsoleColor.Yellow); 
-                            Console.ResetColor();
-                            break;
-                        case Enemy:
-                            Console.Write("[E]", Console.ForegroundColor = ConsoleColor.Red); 
-                            Console.ResetColor();
-                            break;
-                        case Obstacle:
-                            Console.Write("[T]", Console.ForegroundColor = ConsoleColor.Magenta);
-                            Console.ResetColor();
-                            break;
-                        case Player:
-                            Console.Write("[P]", Console.ForegroundColor = ConsoleColor.Green); 
-                            Console.ResetColor();
-                            break;
-                        default:
-                            Console.ResetColor();
-                            Console.Write("[ ]");
-                            break;
-                    }
 
-                }
-                Console.WriteLine();
-            }
-        }
     }
 }

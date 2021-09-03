@@ -27,10 +27,11 @@ namespace Game
                 _field = new GameObject[Coordinates.X, Coordinates.Y];
             }
             List<int> possibleCoord = Enumerable.Range(0, Coordinates.X * Coordinates.Y).ToList();
-            CreatePlayer(possibleCoord);
-            CreateFruits(possibleCoord);
-            CreateObstacles(possibleCoord);
-            CreateEnemies(possibleCoord);
+            var rnd = new Random();
+            CreatePlayer(possibleCoord, rnd);
+            CreateFruits(possibleCoord, rnd);
+            CreateObstacles(possibleCoord, rnd);
+            CreateEnemies(possibleCoord, rnd);
         }
         public int StartGame()
         {
@@ -69,9 +70,8 @@ namespace Game
             possibleCoord.RemoveAt(generatedNumber);
             return position;
         }
-        private void CreateFruits(List<int> possibleCoord)
+        private void CreateFruits(List<int> possibleCoord, Random rnd)
         {
-            var rnd = new Random();
             _fruits = new Fruit[Coordinates.X * Coordinates.Y / 20];
             for (int i = 0; i < _fruits.Length; i++)
             {
@@ -80,9 +80,8 @@ namespace Game
                 _field[fruitPosition.X, fruitPosition.Y] = _fruits[i];
             }
         }
-        private void CreateObstacles(List<int> possibleCoord)
+        private void CreateObstacles(List<int> possibleCoord, Random rnd)
         {
-            var rnd = new Random();
             _obstacles = new Obstacle[Coordinates.X * Coordinates.Y / 5];
             for (int i = 0; i < _obstacles.Length; i++)
             {
@@ -91,15 +90,13 @@ namespace Game
                 _field[obstaclePosition.X, obstaclePosition.Y] = _obstacles[i];
             }
         }
-        private void CreateEnemies(List<int> possibleCoord)
+        private void CreateEnemies(List<int> possibleCoord, Random rnd)
         {
-            var rnd = new Random();
             if (Coordinates.X * Coordinates.Y / 25 > 5)
             {
                 _enemies = new Enemy[5];
             }
             else _enemies = new Enemy[Coordinates.X * Coordinates.Y / 25];
-
             for (int i = 0; i < _enemies.Length; i++)
             {
                 CoordinateStructure enemyPosition = CreatePosition(possibleCoord, rnd);
@@ -107,9 +104,8 @@ namespace Game
                 _field[enemyPosition.X, enemyPosition.Y] = _enemies[i];
             }
         }
-        private void CreatePlayer(List<int> possibleCoord)
+        private void CreatePlayer(List<int> possibleCoord, Random rnd)
         {
-            var rnd = new Random();
             CoordinateStructure position = CreatePosition(possibleCoord, rnd);
             _player = new Player(position, _inputOutput);
             _field[position.X, position.Y] = _player;

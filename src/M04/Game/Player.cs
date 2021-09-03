@@ -10,41 +10,28 @@ namespace Game
     {
         public int Score { get; private set; } = 0;
         public bool PlayerIsAlive { get; set; }
+        public bool AteFruit { get; private set; }
         private IInputOutputHandler _inputOutput;
-        public Player(CoordinateStructure startPosition, IInputOutputHandler inputOutput)
+        public Player(CoordinateStructure startPosition, IInputOutputHandler inputOutput) : base(startPosition)
         {
             _inputOutput = inputOutput;
             PlayerIsAlive = true;
-            Coordinates = startPosition;
         }
 
-        public bool Move(GameObject[,] gameField)
+        public IMovable.MoveResult Move(GameObject[,] gameField)
+        {
+            TryMove(gameField);
+            AteFruit = ChangeState(gameField);
+            return new IMovable.MoveResult(AteFruit); // Return true if fruit was eaten on this turn
+        }
+
+        public bool CanMoveTo(GameObject[,] gameField, int X, int Y)
+        {
+            return X < gameField.GetLength(0) && X >= 0 && Y < gameField.GetLength(1) && Y >= 0 && gameField[X, Y] is not Obstacle; // Check if you can step in the X,Y point in a field
+        }
+        private bool ChangeState(GameObject[,] gameField)
         {
             var ateFruit = false;
-            var moved = false;
-            while (!moved)
-            {
-                var direction = _inputOutput.Input();
-                switch (direction)
-                {
-                    case DirectionEnum.Up when CanMoveTo(gameField, Coordinates.X, Coordinates.Y - 1):
-                        moved = TryMove(gameField, Coordinates.X, Coordinates.Y - 1);
-                        break;
-                    case DirectionEnum.Left when CanMoveTo(gameField, Coordinates.X - 1, Coordinates.Y):
-                        moved = TryMove(gameField, Coordinates.X - 1, Coordinates.Y);
-                        break;
-                    case DirectionEnum.Down when CanMoveTo(gameField, Coordinates.X, Coordinates.Y + 1):
-                        moved = TryMove(gameField, Coordinates.X, Coordinates.Y + 1);
-                        break;
-                    case DirectionEnum.Right when CanMoveTo(gameField, Coordinates.X + 1, Coordinates.Y):
-                        moved = TryMove(gameField, Coordinates.X + 1, Coordinates.Y);
-                        break;
-                    default:
-                        var wrongRoute = true;
-                        _inputOutput.WrongInput(wrongRoute);
-                        break;
-                }
-            }
             switch (gameField[Coordinates.X, Coordinates.Y])
             {
                 case Enemy:
@@ -56,18 +43,39 @@ namespace Game
                     break;
             }
             gameField[Coordinates.X, Coordinates.Y] = this;
-            return ateFruit; // Method returns true if a fruit was eaten on the current turn 
+            return ateFruit;
         }
-
-        public bool CanMoveTo(GameObject[,] gameField, int X, int Y)
+        private void TryMove(GameObject[,] gameField)
         {
-            return X < gameField.GetLength(0) && X >= 0 && Y < gameField.GetLength(1) && Y >= 0 && gameField[X, Y] is not Obstacle; // Check if you can step in the X,Y point in a field
+            var movable = false;
+            while (!movable)
+            {
+                var direction = _inputOutput.Input();
+                switch (direction)
+                {
+                    case DirectionEnum.Up when CanMoveTo(gameField, Coordinates.X, Coordinates.Y - 1):
+                        movable = TryChangePosition(gameField, Coordinates.X, Coordinates.Y - 1);
+                        break;
+                    case DirectionEnum.Left when CanMoveTo(gameField, Coordinates.X - 1, Coordinates.Y):
+                        movable = TryChangePosition(gameField, Coordinates.X - 1, Coordinates.Y);
+                        break;
+                    case DirectionEnum.Down when CanMoveTo(gameField, Coordinates.X, Coordinates.Y + 1):
+                        movable = TryChangePosition(gameField, Coordinates.X, Coordinates.Y + 1);
+                        break;
+                    case DirectionEnum.Right when CanMoveTo(gameField, Coordinates.X + 1, Coordinates.Y):
+                        movable = TryChangePosition(gameField, Coordinates.X + 1, Coordinates.Y);
+                        break;
+                    default:
+                        var wrongRoute = true;
+                        _inputOutput.WrongInput(wrongRoute);
+                        break;
+                }
+            }
         }
-
-        private bool TryMove(GameObject[,] gameField, int X, int Y)
+        private bool TryChangePosition(GameObject[,] gameField, int X, int Y)
         {
             gameField[Coordinates.X, Coordinates.Y] = null;
-            Coordinates = new CoordinateStructure(X, Y);
+            Coordinates = new CoordinateStructure() { X = X, Y = Y };
             return true;
         }
     }

@@ -9,7 +9,11 @@ namespace Game
     public abstract class GameObject
     {
         protected CoordinateStructure Coordinates { get; set; }
-        virtual public CoordinateStructure GetCoordinates()
+        protected GameObject(CoordinateStructure coordinates)
+        {
+            Coordinates = coordinates;
+        }
+        public virtual CoordinateStructure GetCoordinates()
         {
             return Coordinates;
         }

@@ -8,12 +8,8 @@ namespace Game
 {
     public struct CoordinateStructure
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public CoordinateStructure(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
+        public int X { get; init; }
+        public int Y { get; init; }
+        
     }
 }

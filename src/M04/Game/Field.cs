@@ -14,54 +14,23 @@ namespace Game
         private Fruit[] _fruits;
         private Obstacle[] _obstacles;
         private IInputOutputHandler _inputOutput;
-        public Field(int maxX, int maxY, IInputOutputHandler inputOutput)
+        public Field(int maxX, int maxY, IInputOutputHandler inputOutput) : base (new CoordinateStructure()  { X = maxX, Y = maxY })
         {
             _inputOutput = inputOutput;
             if (maxX >= 5 && maxY >= 5 && maxX <= 15 && maxY <= 15) // creating gaming field
             {
-                Coordinates = new CoordinateStructure(maxX, maxY);
                 _field = new GameObject[Coordinates.X, Coordinates.Y];
             }
             else
             {
-                Coordinates = new CoordinateStructure(15, 15);
+                Coordinates = new CoordinateStructure() { X = 15, Y = 15 };
                 _field = new GameObject[Coordinates.X, Coordinates.Y];
             }
             List<int> possibleCoord = Enumerable.Range(0, Coordinates.X * Coordinates.Y).ToList();
-            var rnd = new Random();
-
-            CoordinateStructure position = CreatePosition(possibleCoord, rnd);
-            _player = new Player(position, _inputOutput);                             // welcome new player
-            _field[position.X, position.Y] = _player;
-
-            _fruits = new Fruit[Coordinates.X * Coordinates.Y / 20]; // create fruits
-            for (int i = 0; i < _fruits.Length; i++)
-            {
-                CoordinateStructure fruitPosition = CreatePosition(possibleCoord, rnd);
-                _fruits[i] = new Fruit("Apple", rnd.Next(0, 11), fruitPosition);
-                _field[fruitPosition.X, fruitPosition.Y] = _fruits[i];
-            }
-
-            _obstacles = new Obstacle[Coordinates.X * Coordinates.Y / 5]; //create obstacles
-            for (int i = 0; i < _obstacles.Length; i++)
-            {
-                CoordinateStructure obstaclePosition = CreatePosition(possibleCoord, rnd);
-                _obstacles[i] = new Obstacle("Tree", obstaclePosition);
-                _field[obstaclePosition.X, obstaclePosition.Y] = _obstacles[i];
-            }
-
-            if (Coordinates.X * Coordinates.Y / 25 > 5)
-            {
-                _enemies = new Enemy[5];
-            }
-            else _enemies = new Enemy[Coordinates.X * Coordinates.Y / 25]; // create enemies
-
-            for (int i = 0; i < _enemies.Length; i++)
-            {
-                CoordinateStructure enemyPosition = CreatePosition(possibleCoord, rnd);
-                _enemies[i] = new Enemy(_player, enemyPosition, "Wolf");
-                _field[enemyPosition.X, enemyPosition.Y] = _enemies[i];
-            }
+            CreatePlayer(possibleCoord);
+            CreateFruits(possibleCoord);
+            CreateObstacles(possibleCoord);
+            CreateEnemies(possibleCoord);
         }
         public int StartGame()
         {
@@ -69,7 +38,7 @@ namespace Game
             while (_player.PlayerIsAlive && leftToEat > 0)
             {
                 _inputOutput.Output(_field);
-                if (_player.Move(_field))
+                if (_player.Move(_field).HasEaten)
                 {
                     leftToEat--;
                     if (leftToEat == 0)
@@ -81,7 +50,7 @@ namespace Game
                 }
                 foreach (Enemy enemy in _enemies)
                 {
-                    if (enemy.Move(_field)) // condition is true if player is dead
+                    if (enemy.Move(_field).HasEaten) // condition is true if player is dead
                     {
                         _inputOutput.Output(_field);
                         var gameWon = false;
@@ -96,10 +65,54 @@ namespace Game
         private CoordinateStructure CreatePosition(List<int> possibleCoord, Random rnd)
         {
             var generatedNumber = rnd.Next(0, possibleCoord.Count());
-            CoordinateStructure position = new CoordinateStructure(possibleCoord[generatedNumber] % 10, possibleCoord[generatedNumber] / 10);
+            CoordinateStructure position = new CoordinateStructure() { X = possibleCoord[generatedNumber] % 10, Y = possibleCoord[generatedNumber] / 10 };
             possibleCoord.RemoveAt(generatedNumber);
             return position;
         }
+        private void CreateFruits(List<int> possibleCoord)
+        {
+            var rnd = new Random();
+            _fruits = new Fruit[Coordinates.X * Coordinates.Y / 20];
+            for (int i = 0; i < _fruits.Length; i++)
+            {
+                CoordinateStructure fruitPosition = CreatePosition(possibleCoord, rnd);
+                _fruits[i] = new Fruit("Apple", rnd.Next(0, 11), fruitPosition);
+                _field[fruitPosition.X, fruitPosition.Y] = _fruits[i];
+            }
+        }
+        private void CreateObstacles(List<int> possibleCoord)
+        {
+            var rnd = new Random();
+            _obstacles = new Obstacle[Coordinates.X * Coordinates.Y / 5];
+            for (int i = 0; i < _obstacles.Length; i++)
+            {
+                CoordinateStructure obstaclePosition = CreatePosition(possibleCoord, rnd);
+                _obstacles[i] = new Obstacle("Tree", obstaclePosition);
+                _field[obstaclePosition.X, obstaclePosition.Y] = _obstacles[i];
+            }
+        }
+        private void CreateEnemies(List<int> possibleCoord)
+        {
+            var rnd = new Random();
+            if (Coordinates.X * Coordinates.Y / 25 > 5)
+            {
+                _enemies = new Enemy[5];
+            }
+            else _enemies = new Enemy[Coordinates.X * Coordinates.Y / 25];
 
+            for (int i = 0; i < _enemies.Length; i++)
+            {
+                CoordinateStructure enemyPosition = CreatePosition(possibleCoord, rnd);
+                _enemies[i] = new Enemy(_player, enemyPosition, "Wolf");
+                _field[enemyPosition.X, enemyPosition.Y] = _enemies[i];
+            }
+        }
+        private void CreatePlayer(List<int> possibleCoord)
+        {
+            var rnd = new Random();
+            CoordinateStructure position = CreatePosition(possibleCoord, rnd);
+            _player = new Player(position, _inputOutput);
+            _field[position.X, position.Y] = _player;
+        }
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Game
 {
-    interface IMovable
+    public interface IMovable
     {
-        bool Move(GameObject[,] gameField);
+        MoveResult Move(GameObject[,] gameField);
+        record MoveResult(bool HasEaten);
         bool CanMoveTo(GameObject[,] gameField, int X, int Y);
     }
 }

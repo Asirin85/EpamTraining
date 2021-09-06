@@ -10,4 +10,3 @@
 - All of the exceptions should be logged properly and rethrown to the console application.
 - Console application should handle the exceptions and provide the user with the exception details.
 ~~~
-

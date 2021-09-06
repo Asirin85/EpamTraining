@@ -23,7 +23,7 @@ namespace ConsoleUI
                     string input = Console.ReadLine();
                     int intConvertedString = stringLibrary.StringToInt(input);
                     Console.WriteLine($"Success! The number is [{intConvertedString}]");
-                    consoleAppLogger.LogInformation("Converting is a success");
+                    consoleAppLogger.LogInformation("Converting was a success");
                 }
                 catch (FormatException e)
                 {
@@ -46,7 +46,7 @@ namespace ConsoleUI
         }
         private static void ErrorMessageToConsole(string message, ILogger<StringLib> consoleAppLogger)
         {
-            consoleAppLogger.LogInformation("Converting is a failure");
+            consoleAppLogger.LogInformation("Converting was a failure");
             Console.WriteLine(message, Console.ForegroundColor = ConsoleColor.Red);
             Console.ResetColor();
         }

@@ -22,8 +22,7 @@ namespace ConsoleUI
                     Console.WriteLine($"{Environment.NewLine}Write string to convert it to int");
                     string input = Console.ReadLine();
                     int intConvertedString = stringLibrary.StringToInt(input);
-                    int defaultParse = int.Parse(input);                           // This method is for test purpose
-                    Console.WriteLine($"Success! The number is [{intConvertedString}] and default method is [{defaultParse}]");
+                    Console.WriteLine($"Success! The number is [{intConvertedString}]");
                     consoleAppLogger.LogInformation("Converting is a success");
                 }
                 catch (FormatException e)

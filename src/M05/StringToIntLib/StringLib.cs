@@ -16,19 +16,28 @@ namespace StringToIntLib
             int digit = 1;
             try
             {
+                _logger.LogInformation($"Received input [{input}]");
                 if (input is { Length: > 0 })
                 {
                     string stringToInt = input;
                     if (input.Contains('.')) stringToInt = input[0..input.IndexOf('.')];
+                    _logger.LogInformation($"Input was cut to [{stringToInt}]");
+                    _logger.LogInformation("String symbols are being checked..");
                     for (int i = stringToInt.Length - 1; i >= 0; i--)
                     {
+                        _logger.LogInformation($"Current symbol is {stringToInt[i]}");
                         if (char.IsDigit(stringToInt[i]))
                         {
-
+                            _logger.LogInformation($"Current symbol is digit, current number is [{result}]");
                             result += checked((stringToInt[i] - SUBSTRACT_FROM_CHAR) * digit);
+                            _logger.LogInformation($"Adding current symbol to previous number, result is [{result}]");
                             digit *= 10;
                         }
-                        else if (i == 0 && stringToInt[i].Equals('-')) result = 0 - result;
+                        else if (i == 0 && stringToInt[i].Equals('-'))
+                        {
+                            _logger.LogInformation("Current symbol is minus, reversing number");
+                            result = 0 - result;
+                        }
                         else throw new FormatException("Wrong symbol in string that can't be cast to int!");
                     }
                 }

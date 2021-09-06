@@ -1,0 +1,2 @@
+Create a class that implements a method that takes a string which contains text with phone numbers with format like (+1 (123) 456-78-91 or 1 123 456-78-91 or +123 (45) 678-9101).
+(take the source from Text.txt file you should create yourself). A method should return a list of strings with that numbers and write them to another Numbers.txt file

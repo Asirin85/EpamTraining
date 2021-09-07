@@ -2,6 +2,7 @@
 using StringToIntLib;
 using Microsoft.Extensions.Logging;
 using System;
+using Ninject;
 
 namespace ConsoleUI
 {
@@ -9,9 +10,10 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            ILogger<StringLib> consoleAppLogger = new ConsoleAppLogger().GetInstance();
+            IKernel ninjectKernel = new StandardKernel(new IOCConfigModule());
+            var consoleAppLogger = ninjectKernel.Get<ConsoleAppLogger>();
             consoleAppLogger.LogInformation("Initializing my console app");
-            StringLib stringLibrary = new StringLib(consoleAppLogger);
+            var stringLibrary = new StringLib(consoleAppLogger);
             Console.WriteLine("Press any key to start");
             var key = Console.ReadKey();
             do
@@ -20,8 +22,8 @@ namespace ConsoleUI
                 {
                     consoleAppLogger.LogInformation("Starting converting");
                     Console.WriteLine($"{Environment.NewLine}Write string to convert it to int");
-                    string input = Console.ReadLine();
-                    int intConvertedString = stringLibrary.StringToInt(input);
+                    var input = Console.ReadLine();
+                    var intConvertedString = stringLibrary.StringToInt(input);
                     Console.WriteLine($"Success! The number is [{intConvertedString}]");
                     consoleAppLogger.LogInformation("Converting was a success");
                 }

@@ -11,42 +11,27 @@ namespace ConsoleUI
 {
     class ConsoleAppLogger : NLog.Logger, Microsoft.Extensions.Logging.ILogger<StringLib>
     {
-        private static ConsoleAppLogger _instance;
-        private static Logger _logger;
-        public ConsoleAppLogger GetInstance()
+        private Logger _logger;
+        public ConsoleAppLogger()
         {
-            if (_instance == null) _instance = new ConsoleAppLogger();
-            return _instance;
-        }
-        private Logger GetLogger()
-        {
-            if (_logger == null) _logger = LogManager.GetCurrentClassLogger();
-            return _logger;
-        }
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            throw new NotImplementedException(); // i don't know how to implement this for nlog
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
-        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+        public IDisposable BeginScope<TState>(TState state)
         {
-            switch (logLevel)
-            {
-                case Microsoft.Extensions.Logging.LogLevel.Trace:
-                    return GetLogger().IsTraceEnabled;
-                case Microsoft.Extensions.Logging.LogLevel.Debug:
-                    return GetLogger().IsDebugEnabled;
-                case Microsoft.Extensions.Logging.LogLevel.Information:
-                    return GetLogger().IsInfoEnabled;
-                case Microsoft.Extensions.Logging.LogLevel.Error:
-                    return GetLogger().IsErrorEnabled;
-                case Microsoft.Extensions.Logging.LogLevel.Warning:
-                    return GetLogger().IsWarnEnabled;
-                case Microsoft.Extensions.Logging.LogLevel.Critical:
-                    return GetLogger().IsFatalEnabled;
-                default: return false;
-            }
+            return NLog.MappedDiagnosticsLogicalContext.SetScoped("scope", state.ToString());
         }
+
+        public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel) => logLevel switch
+        {
+            Microsoft.Extensions.Logging.LogLevel.Trace => _logger.IsTraceEnabled,
+            Microsoft.Extensions.Logging.LogLevel.Debug => _logger.IsDebugEnabled,
+            Microsoft.Extensions.Logging.LogLevel.Information => _logger.IsInfoEnabled,
+            Microsoft.Extensions.Logging.LogLevel.Error => _logger.IsErrorEnabled,
+            Microsoft.Extensions.Logging.LogLevel.Warning => _logger.IsWarnEnabled,
+            Microsoft.Extensions.Logging.LogLevel.Critical => _logger.IsFatalEnabled,
+            { } => false,
+        };
 
         public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
@@ -54,33 +39,33 @@ namespace ConsoleUI
             {
                 case Microsoft.Extensions.Logging.LogLevel.Trace:
                     if (exception != null)
-                        GetLogger().Trace($"{exception} {state}");
-                    else GetLogger().Trace(state);
+                        _logger.Trace($"{exception} {state}");
+                    else _logger.Trace(state);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Debug:
                     if (exception != null)
-                        GetLogger().Debug($"{exception} {state}");
-                    else GetLogger().Debug(state);
+                        _logger.Debug($"{exception} {state}");
+                    else _logger.Debug(state);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Information:
                     if (exception != null)
-                        GetLogger().Info($"{exception} {state}");
-                    else GetLogger().Info(state);
+                        _logger.Info($"{exception} {state}");
+                    else _logger.Info(state);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Error:
                     if (exception != null)
-                        GetLogger().Error($"{exception} {state}");
-                    else GetLogger().Error(state);
+                        _logger.Error($"{exception} {state}");
+                    else _logger.Error(state);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Warning:
                     if (exception != null)
-                        GetLogger().Warn($"{exception} {state}");
-                    else GetLogger().Warn(state);
+                        _logger.Warn($"{exception} {state}");
+                    else _logger.Warn(state);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Critical:
                     if (exception != null)
-                        GetLogger().Fatal($"{exception} {state}");
-                    else GetLogger().Fatal(state);
+                        _logger.Fatal($"{exception} {state}");
+                    else _logger.Fatal(state);
                     break;
             }
         }

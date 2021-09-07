@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+
 namespace StringToIntLib
 {
     public class StringLib
@@ -29,7 +31,7 @@ namespace StringToIntLib
                         if (char.IsDigit(stringToInt[i]))
                         {
                             _logger.LogInformation($"Current symbol is digit, current number is [{result}]");
-                            result += checked((stringToInt[i] - SUBSTRACT_FROM_CHAR) * digit);
+                            result = checked(result+((stringToInt[i] - SUBSTRACT_FROM_CHAR) * digit));
                             _logger.LogInformation($"Adding current symbol to previous number, result is [{result}]");
                             digit *= 10;
                         }

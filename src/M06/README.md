@@ -2,6 +2,7 @@
 
 ### Objective
 ~~~
+Cover with Unit Tests:
 - M03 Tasks 2-5
  2. Create a class that implements a method which allows to define an average word length in an input string (returns double).
 (Punctuation characters should not affect the word lenght. Don't use regex.)

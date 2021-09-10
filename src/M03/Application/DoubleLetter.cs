@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    static class DoubleLetter
+    public static class DoubleLetter
     {
         public static string DoubleLetters(string input, string charToDouble)
         {

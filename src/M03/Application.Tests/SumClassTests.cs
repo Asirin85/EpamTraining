@@ -27,5 +27,11 @@ namespace Application.Tests
             string result = SumClass.SumOfStrings(firstNum, secondNum);
             Assert.That(result, Is.EqualTo(expectedResult));
         }
+        [Test, Sequential]
+        public void Test_For_SumClass_WrongInput([Values("abc", "15")]string firstNum,[Values("15", "abc")] string secondNum)
+        {
+            Assert.That(() => SumClass.SumOfStrings(firstNum, secondNum), Throws.TypeOf<FormatException>());
+        }
+
     }
 }

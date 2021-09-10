@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    static class WordReverser
+    public static class WordReverser
     {
         public static string Reverse(string input)
         {

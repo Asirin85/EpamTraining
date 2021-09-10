@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    static class WordCounter
+    public static class WordCounter
     {
         public static double AvgWordLength(string input)
         {

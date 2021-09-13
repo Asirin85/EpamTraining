@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    static class SumClass
+    public static class SumClass
     {
         public static string SumOfStrings(string first, string second)
         {
@@ -21,9 +21,17 @@ namespace Application
                     int numFirst = 0;
                     int numSecond = 0;
                     if (markFirst >= 0)
-                        numFirst = first[markFirst] - '0';
+                    {
+                        if (char.IsDigit(first[markFirst]))
+                            numFirst = first[markFirst] - '0';
+                        else throw new FormatException("Wrong symbol in first input");
+                    }
                     if (markSecond >= 0)
-                        numSecond = second[markSecond] - '0';
+                    {
+                        if (char.IsDigit(second[markSecond]))
+                            numSecond = second[markSecond] - '0';
+                        else throw new FormatException("Wrong symbol in second input");
+                    }
                     int sum = numFirst + numSecond + carry;
                     if (sum >= 10)
                     {
@@ -35,6 +43,7 @@ namespace Application
                     markFirst--;
                     markSecond--;
                 }
+                if (carry > 0) res.Insert(0, carry);
                 return res.ToString();
             }
             else throw new ArgumentException("Wrong input data, either null or empty");

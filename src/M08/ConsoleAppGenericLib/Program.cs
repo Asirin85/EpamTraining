@@ -36,13 +36,11 @@ namespace ConsoleAppGenericLib
             }
             //Task 4
             Console.WriteLine($"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{Environment.NewLine}Task 4{Environment.NewLine}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            var stcInt = new Stack<int>(new[] { 1, 2, 3, 4, 5, 6 });
             var stcList = new StackOnList<int>(new[] {1,2,3,4,5,6 });
+            stcList.Push(7);
+            Console.WriteLine(stcList.Peek());
+            Console.WriteLine(stcList.Pop());
             foreach(var i in stcList)
-            {
-                Console.Write($"{i} ");
-            }
-            foreach (var i in stcInt)
             {
                 Console.Write($"{i} ");
             }

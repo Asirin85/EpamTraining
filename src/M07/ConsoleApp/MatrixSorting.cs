@@ -8,81 +8,65 @@ namespace ConsoleApp
 {
     public class MatrixSorting
     {
-        public delegate void Sort(int[,] matrix, OrderType orderType);
+        private int[] _arrayForHelpingSort;
         public void SortMatrix(int[,] matrix, OrderType orderType, ComparisonType compType)
         {
             if (matrix is { Length: > 0 })
             {
-                Sort sort;
+                Action<int, int> sort;
                 switch (compType)
                 {
                     case ComparisonType.Sum:
+                        _arrayForHelpingSort = new int[matrix.GetLength(0)];
                         sort = SortBySum;
                         break;
                     case ComparisonType.Max:
+                        _arrayForHelpingSort = Enumerable.Repeat(int.MinValue, matrix.GetLength(0)).ToArray();
                         sort = SortByMax;
                         break;
                     case ComparisonType.Min:
+                        if (orderType is OrderType.Asc) orderType = OrderType.Desc;
+                        else if (orderType is OrderType.Desc) orderType = OrderType.Asc;
+                        _arrayForHelpingSort = Enumerable.Repeat(int.MaxValue, matrix.GetLength(0)).ToArray();
                         sort = SortByMin;
                         break;
                     default:
                         throw new ArgumentException("Wrong comparison type");
                 }
-                sort(matrix, orderType);
+                BubbleSort(matrix, orderType, sort);
             }
             else throw new ArgumentException("Wrong matrix");
         }
-        private void SortBySum(int[,] matrix, OrderType orderType)
+        private void SortBySum(int matrixElement, int index)
         {
-            int[] sumOfRow = new int[matrix.GetLength(0)];
+            _arrayForHelpingSort[index] += matrixElement;
+        }
+        private void SortByMax(int matrixElement, int index)
+        {
+            if (matrixElement > _arrayForHelpingSort[index]) _arrayForHelpingSort[index] = matrixElement;
+        }
+        private void SortByMin(int matrixElement, int index)
+        {
+            if (matrixElement < _arrayForHelpingSort[index]) _arrayForHelpingSort[index] = matrixElement;
+        }
+        private void BubbleSort(int[,] matrix, OrderType orderType, Action<int, int> fillArray)
+        {
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    sumOfRow[i] += matrix[i, j];
+                    fillArray(matrix[i, j], i);
                 }
             }
-            BubbleSort(matrix, sumOfRow, orderType);
-        }
-        private void SortByMax(int[,] matrix, OrderType orderType)
-        {
-            int[] maxInRow = new int[matrix.GetLength(0)];
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int i = 0; i < _arrayForHelpingSort.Length - 1; i++)
             {
-                maxInRow[i] = int.MinValue;
-                for (int j = 0; j < matrix.GetLength(1); j++)
+                for (int j = i + 1; j < _arrayForHelpingSort.Length; j++)
                 {
-                    if (matrix[i, j] > maxInRow[i]) maxInRow[i] = matrix[i, j];
-                }
-            }
-            BubbleSort(matrix, maxInRow, orderType);
-        }
-        private void SortByMin(int[,] matrix, OrderType orderType)
-        {
-            if (orderType is OrderType.Asc) orderType = OrderType.Desc;
-            else if (orderType is OrderType.Desc) orderType = OrderType.Asc;
-            int[] minInRow = new int[matrix.GetLength(0)];
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                minInRow[i] = int.MaxValue;
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    if (matrix[i, j] < minInRow[i]) minInRow[i] = matrix[i, j];
-                }
-            }
-            BubbleSort(matrix, minInRow, orderType);
-        }
-        private void BubbleSort(int[,] matrix, int[] sortByArray, OrderType orderType)
-        {
-            for (int i = 0; i < sortByArray.Length - 1; i++)
-            {
-                for (int j = i + 1; j < sortByArray.Length; j++)
-                {
-                    if (CheckOrder(orderType, sortByArray, i, j))
+                    if (CheckOrder(orderType, _arrayForHelpingSort, i, j))
                     {
-                        int temp = sortByArray[i];
-                        sortByArray[i] = sortByArray[j];
-                        sortByArray[j] = temp;
+                        int temp = _arrayForHelpingSort[i];
+                        _arrayForHelpingSort[i] = _arrayForHelpingSort[j];
+                        _arrayForHelpingSort[j] = temp;
                         SwapRows(matrix, i, j);
                     }
                 }

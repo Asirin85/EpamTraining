@@ -13,16 +13,12 @@ namespace ConsoleApp
     {
         private System.Timers.Timer _timer;
         private bool _timeElapsed = false;
-        public class CountdownArgs
-        {
-            public string Message { get; internal set; }
-        }
+        public record CountdownArgs(string Message);
         public event EventHandler<CountdownArgs> Send;
 
         private void HandleSendEvent(CountdownArgs mes)
         {
-            var tmp = Send;
-            if (tmp != null) tmp(this, mes);
+            Send?.Invoke(this, mes);
         }
         private void TimerElapsed(object sender, EventArgs e)
         {
@@ -39,7 +35,7 @@ namespace ConsoleApp
         public void TransmitMesage()
         {
             if (_timeElapsed)
-                HandleSendEvent(new CountdownArgs { Message = "Hello to my subscribers!" });
+                HandleSendEvent(new CountdownArgs("Hello to my subscribers!"));
         }
     }
 }

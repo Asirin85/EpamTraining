@@ -9,60 +9,51 @@ namespace ConsoleApp
     public class MatrixSorting
     {
         private int[] _arrayForHelpingSort;
+
         public void SortMatrix(int[,] matrix, OrderType orderType, ComparisonType compType)
         {
             if (matrix is { Length: > 0 })
             {
-                Action<int, int> sort;
-                switch (compType)
-                {
-                    case ComparisonType.Sum:
-                        _arrayForHelpingSort = new int[matrix.GetLength(0)];
-                        sort = SortBySum;
-                        break;
-                    case ComparisonType.Max:
-                        _arrayForHelpingSort = Enumerable.Repeat(int.MinValue, matrix.GetLength(0)).ToArray();
-                        sort = SortByMax;
-                        break;
-                    case ComparisonType.Min:
-                        if (orderType is OrderType.Asc) orderType = OrderType.Desc;
-                        else if (orderType is OrderType.Desc) orderType = OrderType.Asc;
-                        _arrayForHelpingSort = Enumerable.Repeat(int.MaxValue, matrix.GetLength(0)).ToArray();
-                        sort = SortByMin;
-                        break;
-                    default:
-                        throw new ArgumentException("Wrong comparison type");
-                }
-                BubbleSort(matrix, orderType, sort);
+                orderType = CheckForMin(orderType, compType);
+                BubbleSort(matrix, Order(orderType), Comparison(compType));
             }
-            else throw new ArgumentException("Wrong matrix");
+            else throw new ArgumentException("Matrix is null or empty, check your inputs.");
         }
-        private void SortBySum(int matrixElement, int index)
+        private OrderType CheckForMin(OrderType orderType, ComparisonType compType)
         {
-            _arrayForHelpingSort[index] += matrixElement;
+            if (compType is ComparisonType.Min)
+            {
+                if (orderType is OrderType.Asc) orderType = OrderType.Desc;
+                else if (orderType is OrderType.Desc) orderType = OrderType.Asc;
+                else throw new ArgumentException("Wrong order type");
+            }
+            return orderType;
         }
-        private void SortByMax(int matrixElement, int index)
+        private Func<int[], int> Comparison(ComparisonType type) => type switch
         {
-            if (matrixElement > _arrayForHelpingSort[index]) _arrayForHelpingSort[index] = matrixElement;
+            ComparisonType.Sum => row => row.Sum(),
+            ComparisonType.Max => row => row.Max(),
+            ComparisonType.Min => row => row.Min(),
+            _ => throw new ArgumentException("No such comparison type")
+        };
+        private int[] GetRow(int[,] matrix, int rowNumber)
+        {
+            return Enumerable.Range(0, matrix.GetLength(1))
+                    .Select(x => matrix[rowNumber, x])
+                    .ToArray();
         }
-        private void SortByMin(int matrixElement, int index)
+        private void BubbleSort(int[,] matrix, Func<int, int, bool> compare, Func<int[], int> rowFunc)
         {
-            if (matrixElement < _arrayForHelpingSort[index]) _arrayForHelpingSort[index] = matrixElement;
-        }
-        private void BubbleSort(int[,] matrix, OrderType orderType, Action<int, int> fillArray)
-        {
+            _arrayForHelpingSort = new int[matrix.GetLength(0)];
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    fillArray(matrix[i, j], i);
-                }
+                _arrayForHelpingSort[i] = rowFunc(GetRow(matrix, i));
             }
             for (int i = 0; i < _arrayForHelpingSort.Length - 1; i++)
             {
                 for (int j = i + 1; j < _arrayForHelpingSort.Length; j++)
                 {
-                    if (CheckOrder(orderType, _arrayForHelpingSort, i, j))
+                    if (compare(_arrayForHelpingSort[i], _arrayForHelpingSort[j]))
                     {
                         int temp = _arrayForHelpingSort[i];
                         _arrayForHelpingSort[i] = _arrayForHelpingSort[j];
@@ -72,10 +63,10 @@ namespace ConsoleApp
                 }
             }
         }
-        private bool CheckOrder(OrderType orderType, int[] array, int firstIndex, int secondIndex) => orderType switch
+        private Func<int, int, bool> Order(OrderType orderType) => orderType switch
         {
-            OrderType.Asc => array[firstIndex] < array[secondIndex],
-            OrderType.Desc => array[firstIndex] > array[secondIndex],
+            OrderType.Asc => (x, y) => x < y,
+            OrderType.Desc => (x, y) => x > y,
             _ => throw new ArgumentException("Wrong order type")
         };
         public void SwapRows(int[,] matrix, int rowOne, int rowTwo)

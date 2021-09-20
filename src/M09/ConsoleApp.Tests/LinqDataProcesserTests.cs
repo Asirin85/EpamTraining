@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 namespace ConsoleApp.Tests
 {
@@ -8,10 +9,10 @@ namespace ConsoleApp.Tests
     {
         private static List<Student> _studentData = new List<Student>
         {
-            new Student() {Name = "Ivan Petrov", Date = DateTime.Parse("25/11/2012"), Mark = 3 , Test = "Maths" },
-            new Student() {Name = "Anton Petrov", Date = DateTime.Parse("31/12/2012"), Mark = 4, Test = "Maths"},
-            new Student() { Name = "Irina Vasilievna", Date = DateTime.Parse("15/09/2013"), Mark = 5, Test = "Rus" },
-            new Student() {Name = "Alena Vasilievna", Date = DateTime.Parse("18/09/2014"), Mark = 2, Test = "Maths" }
+            new Student() {Name = "Ivan Petrov", Date = DateTime.ParseExact("25/11/2012", "dd/MM/yyyy", CultureInfo.InvariantCulture), Mark = 3 , Test = "Maths" },
+            new Student() {Name = "Anton Petrov", Date = DateTime.ParseExact("31/12/2012", "dd/MM/yyyy", CultureInfo.InvariantCulture), Mark = 4, Test = "Maths"},
+            new Student() { Name = "Irina Vasilievna", Date = DateTime.ParseExact("15/09/2013", "dd/MM/yyyy", CultureInfo.InvariantCulture), Mark = 5, Test = "Rus" },
+            new Student() {Name = "Alena Vasilievna", Date = DateTime.ParseExact("18/09/2014", "dd/MM/yyyy", CultureInfo.InvariantCulture), Mark = 2, Test = "Maths" }
         };
         private static List<TestCaseData> _dataForLinqDataProcesser_CorrectInput = new List<TestCaseData>
         {

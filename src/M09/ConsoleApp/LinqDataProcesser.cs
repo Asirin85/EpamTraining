@@ -67,8 +67,8 @@ namespace ConsoleApp
                 if (!double.TryParse(maxmark, out double numMaxMark)) numMaxMark = 5;
                 if (!argumentsDictionary.TryGetValue("-datefrom", out string datefrom)) datefrom = "";
                 if (!argumentsDictionary.TryGetValue("-dateto", out string dateto)) dateto = "";
-                if (!DateTime.TryParse(datefrom, out DateTime dateFromTime)) dateFromTime = DateTime.MinValue;
-                if (!DateTime.TryParse(dateto, out DateTime dateToTime)) dateToTime = DateTime.MaxValue;
+                if (!DateTime.TryParseExact(datefrom, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateFromTime)) dateFromTime = DateTime.MinValue;
+                if (!DateTime.TryParseExact(dateto, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateToTime)) dateToTime = DateTime.MaxValue;
 
                 var queryResult = from student in result
                                   where student.Name.Contains(name) && student.Date >= dateFromTime && student.Date <= dateToTime && student.Test.Contains(test)

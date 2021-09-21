@@ -8,29 +8,27 @@ namespace GenericLibrary
     {
         public static int GenericBinarySearch<T>(T[] array, T toFind) where T : IComparable<T>
         {
-            if (array is { Length: > 0 } && toFind is not null)
+            if (array is not { Length: > 0 }) throw new ArgumentException(nameof(array));
+            if (toFind is null) throw new ArgumentException(nameof(toFind));
+            int min = 0;
+            int max = array.Length - 1;
+            while (min <= max)
             {
-                int min = 0;
-                int max = array.Length - 1;
-                while (min <= max)
+                int mid = (min + max) / 2;
+                if (array[mid].CompareTo(toFind) == 0)
                 {
-                    int mid = (min + max) / 2;
-                    if (array[mid].Equals(toFind))
-                    {
-                        return mid;
-                    }
-                    else if (array[mid].CompareTo(toFind) > 0)
-                    {
-                        max = mid - 1;
-                    }
-                    else
-                    {
-                        min = mid + 1;
-                    }
+                    return mid;
+                }
+                else if (array[mid].CompareTo(toFind) > 0)
+                {
+                    max = mid - 1;
+                }
+                else
+                {
+                    min = mid + 1;
                 }
             }
-            else throw new ArgumentException("Wrong input");
-            throw new ArgumentException("Item not found in array");
+            throw new ArgumentException("Item was not found in array");
         }
 
         private int _firstFibb = 0;
@@ -48,6 +46,6 @@ namespace GenericLibrary
             }
         }
 
-        
+
     }
 }

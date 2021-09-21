@@ -6,24 +6,24 @@ namespace GenericLibrary.Tests
 {
     public class GenericLibTests
     {
-        private static List<TestCaseData> _dataForGenericBinarySearchWrongInput = new List<TestCaseData>(new[]{
+        private static List<TestCaseData> _dataForGenericBinarySearchWrongInput = new List<TestCaseData>{
         new TestCaseData(null, "a"),
         new TestCaseData(new string[0], "a"),
         new TestCaseData(new[]{"abc","cba","vba"}, null),
         new TestCaseData(new[]{"abc","bbc","cbc"}, "bar"),
-        });
+        };
         [TestCaseSource(nameof(_dataForGenericBinarySearchWrongInput))]
         public void Test_For_GenericLib_GenericBinarySearch_WrongInputArray(string[] input, string toFind)
         {
             Assert.That(() => GenericLib.GenericBinarySearch(input, toFind), Throws.TypeOf<ArgumentException>());
         }
-        private static List<TestCaseData> _dataForGenericBinarySearchCorrectInput = new List<TestCaseData>(new[]{
+        private static List<TestCaseData> _dataForGenericBinarySearchCorrectInput = new List<TestCaseData>{
         new TestCaseData(new[] {5,8,12,22,40}, 12, 2),
         new TestCaseData(new[] {5,8,12,22,40}, 8, 1),
         new TestCaseData(new[] {5,8,12,22,40}, 5, 0),
         new TestCaseData(new[] {5,8,12,22,40},22, 3),
         new TestCaseData(new[] {5,8,12,22,40},40, 4),
-        });
+        };
         [TestCaseSource(nameof(_dataForGenericBinarySearchCorrectInput))]
         public void Test_For_GenericLib_GenericBinarySearch(int[] input, int toFind, int expectedResult)
         {

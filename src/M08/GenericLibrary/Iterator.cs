@@ -9,12 +9,12 @@ namespace GenericLibrary
 {
     class StackOnListIterator<T> : IEnumerator<T>
     {
-        private List<T> _stack;
+        private IReadOnlyList<T> _stack;
         private int _position;
         public StackOnListIterator(List<T> stack)
         {
             _stack = stack;
-            _position = _stack.Count();
+            _position = _stack.Count;
         }
 
         object IEnumerator.Current { get { return _stack[_position]; } }
@@ -30,7 +30,7 @@ namespace GenericLibrary
             {
                 return true;
             }
-            else return false;
+            return false;
         }
 
         public void Reset()

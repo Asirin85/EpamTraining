@@ -16,7 +16,7 @@ namespace GenericLibrary
             _stack = new List<T>(array);
             _currentIndex = array.Length - 1;
         }
-        public List<T> ToList()
+        public List<T> AsList()
         {
             return _stack;
         }

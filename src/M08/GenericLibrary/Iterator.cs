@@ -13,7 +13,7 @@ namespace GenericLibrary
         private int _position;
         public StackOnListIterator(StackOnList<T> stack)
         {
-            _stack = stack.ToList();
+            _stack = stack.AsList();
             _position = stack.Count();
         }
 

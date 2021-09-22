@@ -15,11 +15,12 @@ namespace GenericLibrary
             while (min <= max)
             {
                 int mid = (min + max) / 2;
-                if (array[mid].CompareTo(toFind) == 0)
+                var compareResult = array[mid].CompareTo(toFind);
+                if (compareResult == 0)
                 {
                     return mid;
                 }
-                else if (array[mid].CompareTo(toFind) > 0)
+                else if (compareResult > 0)
                 {
                     max = mid - 1;
                 }

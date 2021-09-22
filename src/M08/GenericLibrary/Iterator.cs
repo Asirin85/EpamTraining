@@ -11,10 +11,10 @@ namespace GenericLibrary
     {
         private IReadOnlyList<T> _stack;
         private int _position;
-        public StackOnListIterator(List<T> stack)
+        public StackOnListIterator(StackOnList<T> stack)
         {
-            _stack = stack;
-            _position = _stack.Count;
+            _stack = stack.ToList();
+            _position = stack.Count();
         }
 
         object IEnumerator.Current { get { return _stack[_position]; } }
@@ -35,7 +35,7 @@ namespace GenericLibrary
 
         public void Reset()
         {
-            _position = _stack.Count();
+            _position = _stack.Count;
         }
     }
 }

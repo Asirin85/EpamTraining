@@ -16,20 +16,32 @@ namespace GenericLibrary
             _stack = new List<T>(array);
             _currentIndex = array.Length - 1;
         }
+        public List<T> ToList()
+        {
+            return _stack;
+        }
+        public int Count()
+        {
+            return _currentIndex + 1;
+        }
         public StackOnList()
         {
             _stack = new List<T>();
         }
         public void Push(T item)
         {
-            _stack.Add(item);
-            _currentIndex++;
+            if (_stack.Count - 1 > _currentIndex)
+                _stack[++_currentIndex] = item;
+            else
+            {
+                _stack.Add(item);
+                _currentIndex++;
+            }
         }
         public T Pop()
         {
             if (_currentIndex == -1) throw new NullReferenceException("Stack is empty, can't pop any value");
-            var item = _stack[_currentIndex];
-            _stack.RemoveAt(_currentIndex--);
+            var item = _stack[_currentIndex--];
             return item;
         }
         public T Peek()
@@ -41,7 +53,7 @@ namespace GenericLibrary
 
         public IEnumerator<T> GetEnumerator()
         {
-            return new StackOnListIterator<T>(_stack);
+            return new StackOnListIterator<T>(this);
         }
         IEnumerator IEnumerable.GetEnumerator()
         {

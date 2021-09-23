@@ -23,7 +23,7 @@ namespace ConsoleApp.Tests
             new TestCaseData("-datefrom 15/09/2013", new List<Student>{_studentData[2], _studentData[3] }),
             new TestCaseData("-dateto 31/12/2012", new List<Student>{ _studentData[0], _studentData[1]}),
             new TestCaseData("",  new List<Student>{ _studentData[0] ,_studentData[1],_studentData[2], _studentData[3]}),
-            new TestCaseData("-minmark 6", new List<Student>{ })
+            new TestCaseData("-minmark 6", new List<Student>{_studentData[0] ,_studentData[1],_studentData[2], _studentData[3]})
         };
         [TestCaseSource(nameof(_dataForLinqDataProcesser_CorrectInput))]
         public void Test_For_LinqDataProcesser_CorrectInput(string args, List<Student> expectedResult)

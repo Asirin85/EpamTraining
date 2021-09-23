@@ -15,7 +15,9 @@ namespace ConsoleApp
         public double Mark { get; set; }
         public override bool Equals(object obj)
         {
-            return Name.Equals((obj as Student).Name) && Test.Equals((obj as Student).Test) && Date.Equals((obj as Student).Date) && Mark == (obj as Student).Mark;
+            if (obj is Student stud)
+                return Name.Equals(stud.Name) && Test.Equals(stud.Test) && Date.Equals(stud.Date) && Mark == stud.Mark;
+            return false;
         }
     }
 }

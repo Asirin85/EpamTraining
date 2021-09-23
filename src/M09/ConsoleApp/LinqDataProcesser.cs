@@ -12,70 +12,43 @@ namespace ConsoleApp
 {
     public class LinqDataProcesser
     {
-        private readonly List<Student> studentsData;
-        private List<Student> result = new List<Student>();
+        private readonly IReadOnlyCollection<Student> studentsData;
         public LinqDataProcesser(string path)
         {
             studentsData = ReadFromJson(path);
         }
-        private void SortResult(string sortBy, string order)
+        private List<Student> SortResult(string sortBy, string order, List<Student> data)
         {
-            if (sortBy is not { Length: > 0 } || order is not { Length: > 0 }) throw new ArgumentException("Empty or null sort criteria");
-            if (!new[] { "mark", "name", "test", "date" }.Contains(sortBy.ToLowerInvariant())) throw new ArgumentException("No such criteria for sorting");
-            if (!order.ToLowerInvariant().Equals("asc") && !order.ToLowerInvariant().Equals("desc")) throw new ArgumentException("No right order specified");
-            bool asc = order.ToLowerInvariant().Equals("asc");
-            var correctedString = $"{sortBy[0].ToString().ToUpperInvariant()}{sortBy.ToLowerInvariant()[1..sortBy.Length]}";
-            var param = typeof(Student).GetProperty(correctedString);
-            if (asc) result = result.OrderBy(s => param.GetValue(s)).ToList();
-            else result = result.OrderByDescending(s => param.GetValue(s)).ToList();
+            if (sortBy is null) throw new ArgumentException(nameof(sortBy));
+            if (order is null) throw new ArgumentException(nameof(order));
+            if (sortBy is { Length: > 0 } && order is { Length: > 0 })
+            {
+                if (!new[] { nameof(Student.Mark), nameof(Student.Name), nameof(Student.Test), nameof(Student.Date) }.Contains(sortBy, StringComparer.InvariantCultureIgnoreCase)) throw new ArgumentException("No such criteria for sorting");
+                if (!order.Equals("asc", StringComparison.InvariantCultureIgnoreCase) && !order.Equals("desc", StringComparison.InvariantCultureIgnoreCase)) throw new ArgumentException("No right order specified");
+                bool asc = order.Equals("asc", StringComparison.InvariantCultureIgnoreCase);
+                var correctedString = $"{sortBy[0].ToString().ToUpperInvariant()}{sortBy.ToLowerInvariant()[1..sortBy.Length]}";
+                var param = typeof(Student).GetProperty(correctedString);
+                return asc ? data.OrderBy(s => param.GetValue(s)).ToList() : data.OrderByDescending(s => param.GetValue(s)).ToList();
+            }
+            return data;
         }
         public List<Student> GetData(string args)
         {
-            if (args is null) args = "";
-            result = studentsData;
-            string[] arrayOfArgs = args.Trim().Split(' ');
-            string[] knownFlags = new[] { "-test", "-minmark", "-maxmark", "-name", "-datefrom", "-dateto" };
-            Dictionary<string, string> argumentsDictionary = new Dictionary<string, string>();
-            for (int i = 0; i < arrayOfArgs.Length - 1; i++)
-            {
-                if (knownFlags.Contains(arrayOfArgs[i]))
-                {
-                    if (!arrayOfArgs[i + 1][0].Equals('-'))
-                    {
-                        argumentsDictionary.Add(arrayOfArgs[i], arrayOfArgs[++i]);
-                    }
-                }
-                else if (arrayOfArgs[i].ToLowerInvariant().Equals("-sort") && i < arrayOfArgs.Length - 2)
-                {
-                    if (!arrayOfArgs[i + 1][0].Equals('-') && !arrayOfArgs[i + 2][0].Equals('-'))
-                        SortResult(arrayOfArgs[++i], arrayOfArgs[++i]);
-                }
-
-            }
-            GetDataByQuery(argumentsDictionary);
-            return result;
+            ArgsStructure arguments = ArgsParser.ParseArgs(args);
+            return GetDataByQuery(arguments, studentsData.ToList());
         }
-        private void GetDataByQuery(Dictionary<string, string> argumentsDictionary)
+        private List<Student> GetDataByQuery(ArgsStructure arguments, List<Student> data)
         {
-            if (result.Count > 0)
+            List<Student> result = new List<Student>();
+            if (data.Count > 0)
             {
-                if (!argumentsDictionary.TryGetValue("-name", out string name)) name = "";
-                if (!argumentsDictionary.TryGetValue("-test", out string test)) test = "";
-                if (!argumentsDictionary.TryGetValue("-minmark", out string minmark)) minmark = "";
-                if (!argumentsDictionary.TryGetValue("-maxmark", out string maxmark)) maxmark = "";
-                if (!double.TryParse(minmark, out double numMinMark)) numMinMark = 0;
-                if (!double.TryParse(maxmark, out double numMaxMark)) numMaxMark = 5;
-                if (!argumentsDictionary.TryGetValue("-datefrom", out string datefrom)) datefrom = "";
-                if (!argumentsDictionary.TryGetValue("-dateto", out string dateto)) dateto = "";
-                if (!DateTime.TryParseExact(datefrom, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateFromTime)) dateFromTime = DateTime.MinValue;
-                if (!DateTime.TryParseExact(dateto, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateToTime)) dateToTime = DateTime.MaxValue;
-
-                var queryResult = from student in result
-                                  where student.Name.Contains(name) && student.Date >= dateFromTime && student.Date <= dateToTime && student.Test.Contains(test)
-                                  && student.Mark >= numMinMark && student.Mark <= numMaxMark
+                var queryResult = from student in data
+                                  where student.Name.Contains(arguments.Name) && student.Date >= arguments.DateFrom && student.Date <= arguments.DateTo && student.Test.Contains(arguments.Test)
+                                  && student.Mark >= arguments.MinMark && student.Mark <= arguments.MaxMark
                                   select student;
-                result = queryResult.ToList();
+                result = SortResult(arguments.SortBy, arguments.SortOrder, queryResult.ToList());
             }
+            return result;
         }
         private List<Student> ReadFromJson(string path)
         {

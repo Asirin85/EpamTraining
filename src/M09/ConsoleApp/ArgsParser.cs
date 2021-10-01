@@ -14,18 +14,13 @@ namespace ConsoleApp
             args ??= "";
             string[] arrayOfArgs = args.Trim().Split(' ');
             string[] knownFlags = new[] { "-test", "-minmark", "-maxmark", "-name", "-datefrom", "-dateto", "-sort" };
-            Dictionary<string, string> argumentsDictionary = new Dictionary<string, string>();
             var pairs = from arg in arrayOfArgs
                         where knownFlags.Contains(arg)
                         let index = Array.IndexOf(arrayOfArgs, arg)
                         let value = index + 1 < arrayOfArgs.Length && !arrayOfArgs[index + 1][0].Equals('-') ? arrayOfArgs[index + 1] : null
                         let result = arg.Equals("-sort") && index + 2 < arrayOfArgs.Length && !arrayOfArgs[index + 2][0].Equals('-') ? $"{value} {arrayOfArgs[index + 2]}" : value
                         select (arg, result);
-            foreach (var element in pairs)
-            {
-                argumentsDictionary.Add(element.arg, element.result);
-            }
-            return CreateStruct(argumentsDictionary);
+            return CreateStruct(pairs.ToDictionary(pair => pair.arg, pair => pair.result));
         }
         private static ArgsStructure CreateStruct(Dictionary<string, string> argsDictionary)
         {
@@ -45,10 +40,7 @@ namespace ConsoleApp
             double doubleMaxMark = double.TryParse(maxmark, out doubleMaxMark) ? doubleMaxMark : 5;
             string datefrom = argsDictionary.TryGetValue("-datefrom", out datefrom) ? datefrom : "";
             string dateto = argsDictionary.TryGetValue("-dateto", out dateto) ? dateto : "";
-            DateTime dateFromTime = DateTime.TryParseExact(datefrom, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateFromTime) ? dateFromTime : DateTime.MinValue;
-            DateTime dateToTime = DateTime.TryParseExact(dateto, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateToTime) ? dateToTime : DateTime.MaxValue;
-
-            return new ArgsStructure { Name = name, MinMark = doubleMinMark, MaxMark = doubleMaxMark, DateFrom = dateFromTime, DateTo = dateToTime, Test = test, SortBy = sortBy, SortOrder = sortOrder };
+            return new ArgsStructure { Name = name, MinMark = doubleMinMark, MaxMark = doubleMaxMark, DateFrom = datefrom, DateTo = dateto, Test = test, SortBy = sortBy, SortOrder = sortOrder };
         }
     }
 }

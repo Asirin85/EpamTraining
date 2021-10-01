@@ -13,11 +13,19 @@ namespace ConsoleApp
         public string Test { get; set; }
         public DateTime Date { get; set; }
         public double Mark { get; set; }
+
         public override bool Equals(object obj)
         {
-            if (obj is Student stud)
-                return Name.Equals(stud.Name) && Test.Equals(stud.Test) && Date.Equals(stud.Date) && Mark == stud.Mark;
-            return false;
+            return obj is Student student &&
+                   Name == student.Name &&
+                   Test == student.Test &&
+                   Date == student.Date &&
+                   Mark == student.Mark;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, Test, Date, Mark);
         }
     }
 }

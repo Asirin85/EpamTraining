@@ -1,6 +1,7 @@
 ﻿using BusinessLogic.Interfaces;
 using BusinessLogic.Logic;
 using BusinessLogic.Services;
+using Domain.Entities;
 using Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,7 +17,8 @@ namespace BusinessLogic
                 .AddScoped<ILecturerService, LecturerService>()
                 .AddScoped<ILectureService, LectureService>()
                 .AddScoped<IStudentService, StudentService>()
-                .AddScoped<IReportable, ReportCreator>();
+                .AddScoped<IReportable, ReportCreator>()
+                .AddScoped<IFormatConverter<Attendance>, ReportConverter<Attendance>>();
         }
     }
 }

@@ -4,17 +4,16 @@
     using BusinessLogic.Interfaces;
     using Domain.Entities;
     using Domain.Services;
-    using Newtonsoft.Json;
     using System.Collections.Generic;
-    using System.Xml.Serialization;
 
     public class ReportCreator : IReportable
     {
         private readonly IAttendanceService _attendanceService;
-
-        public ReportCreator(IAttendanceService attendanceService)
+        private readonly IFormatConverter<Attendance> _formatConverter;
+        public ReportCreator(IAttendanceService attendanceService, IFormatConverter<Attendance> formatConverter)
         {
             _attendanceService = attendanceService;
+            _formatConverter = formatConverter;
         }
 
         public string CreateReportByStudentName(string studentName, string format)
@@ -40,17 +39,12 @@
         private string CreateJSONReport(IEnumerable<Attendance> attendances)
         {
             if (attendances is null) throw new AttendanceListNullException("Unable to make report, attendance list is empty.");
-            return JsonConvert.SerializeObject(attendances);
+            return _formatConverter.ConvertToJSONString(attendances);
         }
         private string CreateXMLReport(IEnumerable<Attendance> attendances)
         {
             if (attendances is null) throw new AttendanceListNullException("Unable to make report, attendance list is empty.");
-            using (var stringwriter = new System.IO.StringWriter())
-            {
-                var serializer = new XmlSerializer(attendances.GetType());
-                serializer.Serialize(stringwriter, attendances);
-                return stringwriter.ToString();
-            }
+            return _formatConverter.ConvertToXMLString(attendances);
         }
     }
 }

@@ -30,21 +30,14 @@
 
         public void Send(string address, string subject, string message)
         {
-            try
+            var mailMessage = new MailMessage
             {
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress(_senderEmail),
-                    Subject = subject,
-                    Body = message,
-                };
-                mailMessage.To.Add(address);
-                _smtpClient.Send(mailMessage);
-            }
-            catch (SmtpException)
-            {
-                // TODO: HANDLE SMTP EXCEPTION
-            }
+                From = new MailAddress(_senderEmail),
+                Subject = subject,
+                Body = message,
+            };
+            mailMessage.To.Add(address);
+            _smtpClient.Send(mailMessage);
         }
     }
 }

@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using RestApi.ErrorHandling;
+    using System.Net.Mail;
 
     [AllowAnonymous]
     [ApiExplorerSettings(IgnoreApi = true)]
@@ -35,6 +36,7 @@
                     LecturerNullException => 500,
                     StudentNullException => 500,
                     ReportFormatNotSupportedException => 400,
+                    SmtpException => 500,
                     _ => 500
                 };
                 return new ErrorResponseModel(exception);

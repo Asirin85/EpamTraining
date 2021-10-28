@@ -5,7 +5,7 @@ namespace ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var countdown = new Countdown();
             var testClass = new TestClassForCountdown(countdown);

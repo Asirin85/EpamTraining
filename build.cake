@@ -25,8 +25,6 @@ List<string> solutions = GetFiles($"{sourceDirectory}/{package}/{package}.sln")
     .Select(file => file.FullPath)
     .ToList();
 
-var tests = GetFiles($"{sourceDirectory}/{package}/{package}.sln").ToList();
-
 var restoreSettings = new DotNetCoreRestoreSettings 
 {
     PackagesDirectory = Directory(sourceDirectory) + Directory("packages"),

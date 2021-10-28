@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
         <WarningsNotAsErrors>S1121</WarningsNotAsErrors>
     </PropertyGroup>
 

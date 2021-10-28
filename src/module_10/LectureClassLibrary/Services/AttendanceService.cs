@@ -4,7 +4,6 @@ using BusinessLogic.Logic;
 using Domain.Entities;
 using Domain.Repos;
 using Domain.Services;
-using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 #nullable enable
@@ -16,14 +15,14 @@ namespace BusinessLogic.Services
         private readonly ILectureRepository _lectureRepository;
         private readonly IStudentRepository _studentRepository;
         private readonly ILecturerRepository _lecturerRepository;
-        private readonly ISendable _sendEmail;
-        private readonly ISendable _sendSMS;
+        private readonly ISmtpClient _smptClient;
+        private readonly ITwilioClient _twilioClient;
 
-        public AttendanceService(IAttendanceRepository attendanceRepository, IStudentRepository studentRepository, ILectureRepository lectureRepository, ILecturerRepository lecturerRepository, IConfiguration configuration)
+        public AttendanceService(IAttendanceRepository attendanceRepository, IStudentRepository studentRepository, ILectureRepository lectureRepository, ILecturerRepository lecturerRepository, ITwilioClient twilioClient, ISmtpClient smtpClient)
         {
             _attendanceRepository = attendanceRepository;
-            _sendEmail = new SendEmail(configuration);
-            _sendSMS = new SendSMS(configuration);
+            _smptClient = smtpClient;
+            _twilioClient = twilioClient;
             _lectureRepository = lectureRepository;
             _lecturerRepository = lecturerRepository;
             _studentRepository = studentRepository;
@@ -78,34 +77,32 @@ namespace BusinessLogic.Services
 
             if (CalculateAverageMarkOfAStudent(studentAttendancesByLectureName) < 4)
             {
-                _sendSMS.Send(student.PhoneNumber, "Your grades in the course have dropped", $"Your grades in {attendedLecture.Name} course dropped below 4, pull yourself together!");
+                _twilioClient.Send(student.PhoneNumber, "Your grades in the course have dropped", $"Your grades in {attendedLecture.Name} course dropped below 4, pull yourself together!");
             }
             if (attendance.StudentAttended == false)
             {
                 var skippedLecturesInCourse = studentAttendancesByLectureName.Where(x => x.StudentAttended == false);
-                if (skippedLecturesInCourse is null) throw new AttendanceListNullException($"Unable to find skipped lectures for student {student.Name}.");
+
                 if (skippedLecturesInCourse.Count() > 3)
                 {
-                    _sendEmail.Send(courseLecturer.Email, $"Student {student.Name} attendance", $"{student.Name} has skipped more that 3 lectures on subject {attendedLecture.Name}");
-                    _sendEmail.Send(student.Email, $"Student {student.Name} attendance", $"{student.Name} has skipped more that 3 lectures on subject {attendedLecture.Name}");
+                    _smptClient.Send(courseLecturer.Email, $"Student {student.Name} attendance", $"{student.Name} has skipped more that 3 lectures on subject {attendedLecture.Name}");
+                    _smptClient.Send(student.Email, $"Student {student.Name} attendance", $"{student.Name} has skipped more that 3 lectures on subject {attendedLecture.Name}");
                 }
             }
         }
         private double CalculateAverageMarkOfAStudent(IEnumerable<Attendance> attendances)
         {
-            int avgMark = 0;
+            double avgMark = 0;
             int count = 0;
             foreach (var attendance in attendances)
             {
                 if (attendance.Mark is not null)
                 {
-                    avgMark += (int)attendance.Mark;
+                    avgMark += (double)attendance.Mark;
                     count++;
                 }
             }
-
-            avgMark = count == 0 ? 0 : avgMark / count;
-            return avgMark;
+            return count == 0 ? 0 : avgMark / count;
         }
     }
 }

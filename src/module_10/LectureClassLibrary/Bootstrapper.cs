@@ -18,6 +18,8 @@ namespace BusinessLogic
                 .AddScoped<ILectureService, LectureService>()
                 .AddScoped<IStudentService, StudentService>()
                 .AddScoped<IReportable, ReportCreator>()
+                .AddScoped<ITwilioClient, AppTwilioClient>()
+                .AddScoped<ISmtpClient, AppSmtpClient>()
                 .AddScoped<IFormatConverter<Attendance>, ReportConverter<Attendance>>();
         }
     }

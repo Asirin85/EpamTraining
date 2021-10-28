@@ -1,27 +1,17 @@
-﻿namespace BusinessLogic.Logic
+﻿/*namespace BusinessLogic.Logic
 {
     using BusinessLogic.Interfaces;
-    using Microsoft.Extensions.Configuration;
     using System;
-    using System.Net;
     using System.Net.Mail;
 
     public class SendEmail : ISendable, IDisposable
     {
         private readonly SmtpClient _smtpClient;
         private readonly string _senderEmail;
-
-        public SendEmail(IConfiguration configuration)
+        public SendEmail(ISmtpClient smtpClient)
         {
-            var senderConfiguration = configuration.GetSection(SenderConfiguration.OptionsName).Get<SenderConfiguration>();
-            _senderEmail = senderConfiguration.Email;
-            _smtpClient = new SmtpClient(senderConfiguration.SmtpHost)
-            {
-                Port = senderConfiguration.Port,
-                Credentials = new NetworkCredential(_senderEmail, senderConfiguration.Password),
-                EnableSsl = true,
-            };
-            
+            _smtpClient = smtpClient.GetClient();
+            _senderEmail = smtpClient.GetSender();
         }
 
         public void Dispose()
@@ -42,3 +32,4 @@
         }
     }
 }
+*/

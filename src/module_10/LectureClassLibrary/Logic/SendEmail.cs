@@ -21,6 +21,7 @@
                 Credentials = new NetworkCredential(_senderEmail, senderConfiguration.Password),
                 EnableSsl = true,
             };
+            
         }
 
         public void Dispose()

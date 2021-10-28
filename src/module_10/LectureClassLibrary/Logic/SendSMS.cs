@@ -26,7 +26,6 @@
                 from: new Twilio.Types.PhoneNumber(_senderPhoneNumber),
                 to: new Twilio.Types.PhoneNumber(address)
              );
-
         }
     }
 }

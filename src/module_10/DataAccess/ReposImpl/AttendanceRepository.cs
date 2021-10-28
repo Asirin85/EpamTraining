@@ -69,6 +69,7 @@ namespace DataAccess.ReposImpl
         {
             var attendaceDb = _mapper.Map<AttendanceDb>(attendance);
             var result = _applicationContext.Attendances.Add(attendaceDb);
+            _applicationContext.SaveChanges();
             return (result.Entity.StudentId, result.Entity.LectureId);
         }
     }

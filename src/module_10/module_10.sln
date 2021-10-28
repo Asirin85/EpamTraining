@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi.Tests", "RestApi.Tests\RestApi.Tests.csproj", "{50D78B15-CA86-4388-B01B-8A7D0017A652}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess.Tests", "DataAccess.Tests\DataAccess.Tests.csproj", "{AF5C9EBD-FEFC-492C-B84D-35D9F8A681F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{50D78B15-CA86-4388-B01B-8A7D0017A652}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50D78B15-CA86-4388-B01B-8A7D0017A652}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50D78B15-CA86-4388-B01B-8A7D0017A652}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF5C9EBD-FEFC-492C-B84D-35D9F8A681F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF5C9EBD-FEFC-492C-B84D-35D9F8A681F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF5C9EBD-FEFC-492C-B84D-35D9F8A681F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF5C9EBD-FEFC-492C-B84D-35D9F8A681F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

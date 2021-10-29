@@ -6,6 +6,7 @@ namespace RestApi.Validation
 {
     internal class StudentValidator : AbstractValidator<StudentValid>
     {
+        private static Regex _phoneRegex = new Regex(@"(\+[1-9][0-9]{10}[0-9]?)\b");
         public StudentValidator()
         {
             RuleFor(x => x.Name).NotNull().WithMessage("Student name can not be empty.").Length(1, 75).WithMessage("Student name must be more than 1 and less than 75 symbols.").NotEqual("admin").WithMessage("Student name can not be 'admin'.");
@@ -15,8 +16,7 @@ namespace RestApi.Validation
         private bool PhoneNumber(string number)
         {
             if (number == null) return false;
-            var phoneRegex = new Regex(@"(\+[1-9][0-9]{10}[0-9]?)\b");
-            return phoneRegex.Match(number).Success;
+            return _phoneRegex.Match(number).Success;
         }
     }
 }

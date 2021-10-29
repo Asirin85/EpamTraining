@@ -25,7 +25,7 @@ namespace BusinessLogic.Services
             return _homeworkRepository.Edit(homework);
         }
 
-        public Homework Get(int id)
+        public Homework? Get(int id)
         {
             return _homeworkRepository.Get(id);
         }

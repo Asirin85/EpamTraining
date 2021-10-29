@@ -1,15 +1,15 @@
 ﻿using DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
-
+#nullable disable
 namespace DataAccess
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<StudentDb> Students { get; set; }
-        public DbSet<LectureDb> Lectures { get; set; }
-        public DbSet<HomeworkDb> Homeworks { get; set; }
-        public DbSet<LecturerDb> Lecturers { get; set; }
-        public DbSet<AttendanceDb> Attendances { get; set; }
+        internal DbSet<StudentDb> Students { get; set; }
+        internal DbSet<LectureDb> Lectures { get; set; }
+        internal DbSet<HomeworkDb> Homeworks { get; set; }
+        internal DbSet<LecturerDb> Lecturers { get; set; }
+        internal DbSet<AttendanceDb> Attendances { get; set; }
         public ApplicationContext()
         {
         }

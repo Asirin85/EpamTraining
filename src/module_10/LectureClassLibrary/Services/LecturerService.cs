@@ -24,7 +24,7 @@ namespace BusinessLogic.Services
             return _lecturerRepository.Edit(lecturer);
         }
 
-        public Lecturer Get(int id)
+        public Lecturer? Get(int id)
         {
             return _lecturerRepository.Get(id);
         }

@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using DataAccess.Entities;
+using Domain;
 using Domain.Entities;
 using Domain.Repos;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-#nullable enable
+
 namespace DataAccess.ReposImpl
 {
     internal class AttendanceRepository : IAttendanceRepository
@@ -26,7 +27,7 @@ namespace DataAccess.ReposImpl
             }
         }
 
-        public (int studentId, int lectureId) Edit(Attendance attendance)
+        public AttendaceId Edit(Attendance attendance)
         {
             if (_applicationContext.Attendances.FirstOrDefault(x => x.LectureId == attendance.LectureId && x.StudentId == attendance.StudentId) is AttendanceDb attendanceDb)
             {
@@ -37,7 +38,7 @@ namespace DataAccess.ReposImpl
                 _applicationContext.Entry(attendanceDb).State = EntityState.Modified;
                 _applicationContext.SaveChanges();
             }
-            return (attendance.StudentId, attendance.LectureId);
+            return new AttendaceId(attendance.StudentId, attendance.LectureId);
         }
 
         public Attendance? Get(int studentId, int lectureId)
@@ -65,12 +66,12 @@ namespace DataAccess.ReposImpl
             return _mapper.Map<IReadOnlyCollection<Attendance>>(attendancesDb);
         }
 
-        public (int studentId, int lectureId) New(Attendance attendance)
+        public AttendaceId New(Attendance attendance)
         {
             var attendaceDb = _mapper.Map<AttendanceDb>(attendance);
             var result = _applicationContext.Attendances.Add(attendaceDb);
             _applicationContext.SaveChanges();
-            return (result.Entity.StudentId, result.Entity.LectureId);
+            return new AttendaceId(result.Entity.StudentId, result.Entity.LectureId);
         }
     }
 }

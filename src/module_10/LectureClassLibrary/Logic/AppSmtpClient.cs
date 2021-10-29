@@ -1,16 +1,18 @@
 ﻿namespace BusinessLogic.Logic
 {
+    using BusinessLogic.Exceptions;
     using BusinessLogic.Interfaces;
     using Microsoft.Extensions.Configuration;
     using System;
     using System.Net;
     using System.Net.Mail;
 
-    internal class AppSmtpClient : ISmtpClient, IDisposable
+    sealed internal class AppSmtpClient : ISmtpClient, IDisposable
     {
         private SmtpClient _smtpClient;
         private readonly string _senderEmail;
         private readonly SenderConfiguration _senderConfiguration;
+        private bool disposed = false;
         public AppSmtpClient(IConfiguration configuration)
         {
             _senderConfiguration = configuration.GetSection(SenderConfiguration.OptionsName).Get<SenderConfiguration>();
@@ -25,11 +27,16 @@
 
         public void Dispose()
         {
-            _smtpClient.Dispose();
+            if (!disposed)
+            {
+                _smtpClient.Dispose();
+                disposed = true;
+            }
         }
 
         public void Send(string address, string subject, string message)
         {
+            if (disposed) throw new SmtpClientDisposedException("Smtp client was disposed, unable to send message.");
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(_senderEmail),

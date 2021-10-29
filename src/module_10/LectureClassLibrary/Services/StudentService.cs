@@ -3,7 +3,7 @@ using Domain.Repos;
 using Domain.Services;
 using System.Collections.Generic;
 using System.Linq;
-#nullable enable
+
 namespace BusinessLogic.Services
 {
     internal class StudentService : IStudentService

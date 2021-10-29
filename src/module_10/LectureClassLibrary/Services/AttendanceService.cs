@@ -1,12 +1,12 @@
 ﻿using BusinessLogic.Exceptions;
 using BusinessLogic.Interfaces;
-using BusinessLogic.Logic;
+using Domain;
 using Domain.Entities;
 using Domain.Repos;
 using Domain.Services;
 using System.Collections.Generic;
 using System.Linq;
-#nullable enable
+
 namespace BusinessLogic.Services
 {
     internal class AttendanceService : IAttendanceService
@@ -33,9 +33,9 @@ namespace BusinessLogic.Services
             _attendanceRepository.Delete(studentId, lectureId);
         }
 
-        public (int studentId, int lectureId) Edit(Attendance attendance)
+        public AttendaceId Edit(Attendance attendance)
         {
-            (int studentId, int lectureId) ids = _attendanceRepository.Edit(attendance);
+            var ids = _attendanceRepository.Edit(attendance);
             SendNotifications(attendance);
             return ids;
         }
@@ -50,9 +50,9 @@ namespace BusinessLogic.Services
             return _attendanceRepository.GetAll().ToArray();
         }
 
-        public (int studentId, int lectureId) New(Attendance attendance)
+        public AttendaceId New(Attendance attendance)
         {
-            (int studentId, int lectureId) ids = _attendanceRepository.New(attendance);
+            var ids = _attendanceRepository.New(attendance);
             SendNotifications(attendance);
             return ids;
         }
@@ -73,9 +73,9 @@ namespace BusinessLogic.Services
             var courseLecturer = _lecturerRepository.Get(attendedLecture.LecturerId);
             if (courseLecturer is null) throw new LecturerNullException($"Unable to find lecturer with id = {attendedLecture.LecturerId}");
 
-            var studentAttendancesByLectureName = GetAllByLectureName(attendedLecture.Name).Where(x => x.StudentId == student.Id);
-
-            if (CalculateAverageMarkOfAStudent(studentAttendancesByLectureName) < 4)
+            var studentAttendancesByLectureName = GetAllByLectureName(attendedLecture.Name).Where(x => x.StudentId == student.Id).ToArray();
+            var average = studentAttendancesByLectureName.Where(x => x.Mark is not null).Average(x => x.Mark);
+            if (average is not null && average < 4)
             {
                 _twilioClient.Send(student.PhoneNumber, "Your grades in the course have dropped", $"Your grades in {attendedLecture.Name} course dropped below 4, pull yourself together!");
             }
@@ -89,20 +89,6 @@ namespace BusinessLogic.Services
                     _smptClient.Send(student.Email, $"Student {student.Name} attendance", $"{student.Name} has skipped more that 3 lectures on subject {attendedLecture.Name}");
                 }
             }
-        }
-        private double CalculateAverageMarkOfAStudent(IEnumerable<Attendance> attendances)
-        {
-            double avgMark = 0;
-            int count = 0;
-            foreach (var attendance in attendances)
-            {
-                if (attendance.Mark is not null)
-                {
-                    avgMark += (double)attendance.Mark;
-                    count++;
-                }
-            }
-            return count == 0 ? 0 : avgMark / count;
         }
     }
 }

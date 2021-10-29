@@ -2,11 +2,9 @@
 {
     public record Attendance
     {
-        public int LectureId { get; set; }
-        // public Lecture Lecture { get; set; }
-        public int StudentId { get; set; }
-        //public Student Student { get; set; }
-        public int? Mark { get; set; }
-        public bool? StudentAttended { get; set; }
+        public int LectureId { get; init; }
+        public int StudentId { get; init; }
+        public int? Mark { get; init; }
+        public bool? StudentAttended { get; init; }
     }
 }

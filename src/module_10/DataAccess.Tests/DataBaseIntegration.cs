@@ -51,7 +51,12 @@ namespace DataAccess.Tests
         {
             _applicationContext.Dispose();
         }
-
+        [Test]
+        public void Test_For_MapperConfiguration()
+        {
+            var mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile<MapperProfile>());
+            mapperConfiguration.AssertConfigurationIsValid();
+        }
         [Test]
         public void Test_For_LecturerRepos_New()
         {
@@ -314,7 +319,7 @@ namespace DataAccess.Tests
             var attendance = new Attendance { LectureId = 2, StudentId = 1, Mark = 2, StudentAttended = true };
             var idNew = _attendanceRepository.New(attendance);
 
-            var newAttendanceFromDb = _applicationContext.Attendances.FirstOrDefault(x => x.LectureId == idNew.lectureId && x.StudentId == idNew.studentId);
+            var newAttendanceFromDb = _applicationContext.Attendances.FirstOrDefault(x => x.LectureId == idNew.LectureId && x.StudentId == idNew.StudentId);
             var newAttendanceConverted = _mapper.Map<Attendance>(newAttendanceFromDb);
             _applicationContext.Entry(newAttendanceFromDb).State = EntityState.Deleted;
             _applicationContext.Entry(newLecture).State = EntityState.Deleted;
@@ -327,7 +332,7 @@ namespace DataAccess.Tests
         {
             var attendanceEdited = new Attendance { LectureId = 1, StudentId = 1, Mark = 0, StudentAttended = false };
             var idEdited = _attendanceRepository.Edit(attendanceEdited);
-            var attendanceEditedDb = _applicationContext.Attendances.Find(idEdited.lectureId, idEdited.studentId);
+            var attendanceEditedDb = _applicationContext.Attendances.Find(idEdited.LectureId, idEdited.StudentId);
             var attendanceEditedConverted = _mapper.Map<Attendance>(attendanceEditedDb);
             Assert.AreEqual(attendanceEdited, attendanceEditedConverted);
         }

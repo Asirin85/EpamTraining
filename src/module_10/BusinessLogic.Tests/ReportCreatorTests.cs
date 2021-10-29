@@ -11,12 +11,6 @@ namespace BusinessLogic.Tests
 {
     public class Tests
     {
-        [SetUp]
-        public void Setup()
-        {
-
-        }
-
         [TestCase("any", null)]
         public void Test_For_ReportCreator_NullFormat(string lectureOrStudentName, string format)
         {

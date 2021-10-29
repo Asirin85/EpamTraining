@@ -1,14 +1,15 @@
-﻿namespace BusinessLogic.Logic
+﻿#nullable disable
+namespace BusinessLogic.Logic
 {
     public record SenderConfiguration
     {
         public const string OptionsName = "SenderConfiguration";
-        public string SmtpHost { get; set; }
-        public int Port { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string TwilioSID { get; set; }
-        public string TwilioAUTH { get; set; }
-        public string SenderPhoneNumber { get; set; }
+        public string SmtpHost { get; init; }
+        public int Port { get; init; }
+        public string Email { get; init; }
+        public string Password { get; init; }
+        public string TwilioSID { get; init; }
+        public string TwilioAUTH { get; init; }
+        public string SenderPhoneNumber { get; init; }
     }
 }

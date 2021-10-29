@@ -5,7 +5,6 @@
     using BusinessLogic.Services;
     using Domain.Entities;
     using Domain.Repos;
-    using Domain.Services;
     using Moq;
     using NUnit.Framework;
     using System.Collections.Generic;
@@ -99,7 +98,7 @@
                 new Attendance {LectureId=2, StudentId =1, StudentAttended = false, Mark = 0 },
                 new Attendance {LectureId=3, StudentId =1, StudentAttended = false, Mark = 0 },
                 new Attendance {LectureId=4, StudentId =1, StudentAttended = false, Mark = 0 }});
-           _smtp.Setup(x => x.Send(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
+            _smtp.Setup(x => x.Send(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
             var attendanceService = new AttendanceService(_attendanceRepo.Object, _studentRepo.Object, _lectureRepo.Object, _lecturerRepo.Object, _twilio.Object, _smtp.Object);
             attendanceService.SendNotifications(att);
             _smtp.Verify(x => x.Send(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()));

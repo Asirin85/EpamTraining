@@ -5,7 +5,7 @@ using Domain.Repos;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-#nullable enable
+
 namespace DataAccess.ReposImpl
 {
     internal class LecturerRepository : ILecturerRepository
@@ -29,8 +29,6 @@ namespace DataAccess.ReposImpl
             if (_applicationContext.Lecturers.Find(lecturer.Id) is LecturerDb lecturerDb)
             {
                 lecturerDb.Name = lecturer.Name;
-                // var lectures = _mapper.Map<ICollection<LectureDb>>(lecturer.Lectures);
-                // lecturerDb.Lectures = lectures;
                 lecturerDb.Email = lecturer.Email;
                 _applicationContext.Entry(lecturerDb).State = EntityState.Modified;
                 _applicationContext.SaveChanges();

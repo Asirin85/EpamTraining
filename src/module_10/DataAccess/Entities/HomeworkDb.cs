@@ -1,6 +1,7 @@
-﻿namespace DataAccess.Entities
+﻿#nullable disable
+namespace DataAccess.Entities
 {
-    public class HomeworkDb
+    internal class HomeworkDb
     {
         public int Id { get; set; }
         public string Task { get; set; }

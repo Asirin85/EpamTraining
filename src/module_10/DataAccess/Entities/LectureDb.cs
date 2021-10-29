@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-
+#nullable disable
 namespace DataAccess.Entities
 {
-    public class LectureDb
+    internal class LectureDb
     {
         public int Id { get; set; }
         public string Name { get; set; }

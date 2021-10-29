@@ -5,7 +5,7 @@ using Domain.Repos;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-#nullable enable
+
 namespace DataAccess.ReposImpl
 {
     internal class HomeworkRepository : IHomeworkRepository

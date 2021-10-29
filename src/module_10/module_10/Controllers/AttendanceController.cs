@@ -37,13 +37,13 @@ namespace RestApi.Controllers
         public IActionResult AddAttendance(AttendanceValid attendance)
         {
             var newAttendanceId = _attendanceService.New(_mapper.Map<Attendance>(attendance));
-            return Ok($"/attendance/{newAttendanceId.studentId}/{newAttendanceId.lectureId}");
+            return Ok($"/attendance/{newAttendanceId.StudentId}/{newAttendanceId.LectureId}");
         }
         [HttpPut("{studentId}/{lectureId}")]
         public IActionResult UpdateAttendance(int studentId, int lectureId, AttendanceValid attendance)
         {
             var attendanceId = _attendanceService.Edit(_mapper.Map<Attendance>(attendance) with { StudentId = studentId, LectureId = lectureId });
-            return Ok($"/attendance/{attendanceId.studentId}/{attendanceId.lectureId}");
+            return Ok($"/attendance/{attendanceId.StudentId}/{attendanceId.LectureId}");
         }
         [HttpDelete("{studentId}/{lectureId}")]
         public IActionResult DeleteAttendance(int studentId, int lectureId)

@@ -25,7 +25,7 @@
             if (context is not null)
             {
                 var exception = context.Error;
-                _logger.LogError(exception.ToString());
+                _logger.LogError(0, exception, exception.Message);
                 Response.StatusCode = exception switch
                 {
                     AttendanceListNullException => 500,
@@ -37,6 +37,7 @@
                     StudentNullException => 500,
                     ReportFormatNotSupportedException => 400,
                     SmtpException => 500,
+                    SmtpClientDisposedException=>500,
                     _ => 500
                 };
                 return new ErrorResponseModel(exception);

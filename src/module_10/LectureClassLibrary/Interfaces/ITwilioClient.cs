@@ -1,6 +1,6 @@
 ﻿namespace BusinessLogic.Interfaces
 {
-    public interface ITwilioClient:ISendable
+    public interface ITwilioClient : ISendable
     {
 
     }

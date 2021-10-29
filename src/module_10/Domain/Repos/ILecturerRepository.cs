@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 using System.Collections.Generic;
-#nullable enable
+
 namespace Domain.Repos
 {
     public interface ILecturerRepository

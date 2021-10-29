@@ -1,9 +1,7 @@
 ﻿namespace BusinessLogic.Interfaces
 {
-    using System.Net.Mail;
-
-    public interface ISmtpClient:ISendable
+    public interface ISmtpClient : ISendable
     {
-        
+
     }
 }

@@ -5,7 +5,7 @@ namespace ConsoleGame
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             IInputOutputHandler inputOutput = new ConsoleInputOutput();
             Field gamePlan = new Field(10, 10, inputOutput);

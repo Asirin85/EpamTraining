@@ -1,0 +1,5 @@
+<Project>
+    <ItemGroup Condition="'$(Configuration)|$(Platform)'!='Release|AnyCPU'"> 
+        <PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" />
+    </ItemGroup>
+</Project>

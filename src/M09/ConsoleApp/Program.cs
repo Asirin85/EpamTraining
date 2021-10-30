@@ -8,7 +8,7 @@ namespace ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             string path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "testdata.json");
             IReadOnlyCollection<Student> students = JsonReader.ReadFromJson(path);

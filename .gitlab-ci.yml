@@ -3,9 +3,6 @@ image: mcr.microsoft.com/dotnet/sdk:5.0
 stages:
     - test
 
-before_script:
-    - "dotnet tool restore"
-
 workflow:
     rules:
         - if: $CI_MERGE_REQUEST_ID             # Execute jobs in merge request context
@@ -14,4 +11,4 @@ workflow:
 test:
     stage: test
     script:
-        - "dotnet cake --target=test --configuration=Release"
+        - "dotnet test --configuration=Release"

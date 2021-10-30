@@ -5,7 +5,7 @@ namespace ConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             //RectangleLibrary check
             int widthOfRectangle = 6;

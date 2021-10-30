@@ -8,14 +8,14 @@ namespace ConsoleUI
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             IKernel ninjectKernel = new StandardKernel(new IOCConfigModule());
             var consoleAppLogger = ninjectKernel.Get<ConsoleAppLogger>();
             consoleAppLogger.LogInformation("Initializing my console app");
             var stringLibrary = new StringLib(consoleAppLogger);
             Console.WriteLine("Press any key to start");
-            var key = Console.ReadKey();
+            ConsoleKeyInfo key;
             do
             {
                 try

@@ -4,7 +4,7 @@ namespace Perfomance
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Process process = Process.GetCurrentProcess();
             

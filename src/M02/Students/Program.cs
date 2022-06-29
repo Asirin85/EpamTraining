@@ -6,7 +6,7 @@ namespace Students
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             string[] subjects = { "Maths", "PE", "Physics", "English", "Programming", "History" };
             var student1c1 = new Student("vasya.pupkin@epam.com");

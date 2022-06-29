@@ -6,7 +6,7 @@ namespace Application
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             string testString = "  ,.affd,affd,afsd.....dffsa    .dsffa,, dffsd";
             Console.WriteLine($"Average length of word in string [{testString}] is {WordCounter.AvgWordLength(testString)}{Environment.NewLine}"); // First task

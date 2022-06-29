@@ -5,12 +5,12 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> -->
-        <WarningsNotAsErrors>S1121</WarningsNotAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsNotAsErrors>S1121,CS0121</WarningsNotAsErrors>
     </PropertyGroup>
 
     <PropertyGroup>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    </PropertyGroup>
+    </PropertyGroup>    
 </Project>

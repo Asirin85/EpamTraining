@@ -4,7 +4,7 @@ namespace ReversePolishApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var rpc = new ReversePolishCalculator();
             Console.WriteLine(rpc.Calculate("5 1 2 + 4 * + 3 -"));

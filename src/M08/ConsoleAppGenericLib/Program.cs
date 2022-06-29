@@ -6,7 +6,7 @@ namespace ConsoleAppGenericLib
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var gLib = new GenericLib();
             //Task 2
